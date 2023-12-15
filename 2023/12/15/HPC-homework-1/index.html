@@ -1,0 +1,462 @@
+
+
+<!DOCTYPE html>
+<html lang="en" color-mode=light>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>HPC homework 1 - Hexo</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="google" content="notranslate" />
+  
+  <meta name="description" content="单线程矩阵乘法任务说明本任务在单个Intel CPU上...">
+  <meta name="author" content="Jeremy Chen">
+  <link rel="icon" href="/images/icons/favicon-16x16.png" type="image/png" sizes="16x16">
+  <link rel="icon" href="/images/icons/favicon-32x32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="/images/icons/apple-touch-icon.png" sizes="180x180">
+  <meta rel="mask-icon" href="/images/icons/stun-logo.svg" color="#333333">
+  
+    <meta rel="msapplication-TileImage" content="/images/icons/favicon-144x144.png">
+    <meta rel="msapplication-TileColor" content="#000000">
+  
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+
+  
+    
+<link rel="stylesheet" href="https://at.alicdn.com/t/font_1445822_p6ry5n7lrr.css">
+
+  
+
+  
+    
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css">
+
+  
+
+  
+    
+      
+        
+        
+<link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.18.1/styles/xcode.min.css" name="highlight-style" mode="light">
+
+      
+        
+        
+<link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.18.1/styles/solarized-dark.min.css" name="highlight-style" mode="dark">
+
+      
+  
+
+  <script>
+    var CONFIG = window.CONFIG || {};
+    var ZHAOO = window.ZHAOO || {};
+    CONFIG = {
+      isHome: false,
+      fancybox: true,
+      pjax: false,
+      loading: {
+        gif: '/images/theme/loading.gif',
+        lottie: ''
+      },
+      lazyload: {
+        enable: true,
+        only_post: 'false',
+        loading: {
+          gif: '/images/theme/loading.gif',
+          lottie: ''
+        }
+      },
+      donate: {
+        enable: true,
+        alipay: 'https://pic.izhaoo.com/alipay.jpg',
+        wechat: 'https://pic.izhaoo.com/wechat.jpg'
+      },
+      galleries: {
+        enable: true
+      },
+      fab: {
+        enable: true,
+        always_show: false
+      },
+      carrier: {
+        enable: true
+      },
+      daovoice: {
+        enable: false
+      },
+      preview: {
+        background: {
+          default: '',
+          api: ''
+        },
+        motto: {
+          default: '我在开了灯的床头下，想问问自己的心啊。',
+          typing: true,
+          api: 'https://v2.jinrishici.com/one.json',
+          data_contents: '["data","content"]'
+        },
+      },
+      qrcode: {
+        enable: true,
+        type: 'url',
+        image: 'https://pic.izhaoo.com/weapp-code.jpg',
+      },
+      toc: {
+        enable: true
+      },
+      scrollbar: {
+        type: 'default'
+      },
+      notification: {
+        enable: false,
+        delay: 4500,
+        list: '',
+        page_white_list: '',
+        page_black_list: ''
+      },
+      search: {
+        enable: false,
+        path: ''
+      }
+    }
+  </script>
+
+  
+
+  
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="lock-screen">
+  <div class="loading" id="loading"></div>
+  
+    
+
+
+  <nav class="navbar">
+    <div class="left">
+      
+        <i class="iconfont iconhome j-navbar-back-home"></i>
+      
+      
+        <i class="iconfont iconqrcode j-navbar-qrcode"></i>
+      
+      
+        <i class="iconfont iconmoono" id="color-toggle" color-toggle="light"></i>
+      
+      
+    </div>
+    <div class="center">HPC homework 1</div>
+    <div class="right">
+      <i class="iconfont iconmenu j-navbar-menu"></i>
+    </div>
+    
+      <div id="qrcode-navbar"></div>
+    
+  </nav>
+
+  
+  
+
+<nav class="menu">
+  <div class="menu-container">
+    <div class="menu-close">
+      <i class="iconfont iconbaseline-close-px"></i>
+    </div>
+    <ul class="menu-content"><li class="menu-item">
+        <a href="/ " class="underline "> 首页</a>
+      </li><li class="menu-item">
+        <a href="/galleries/ " class="underline "> 摄影</a>
+      </li><li class="menu-item">
+        <a href="/archives/ " class="underline "> 归档</a>
+      </li><li class="menu-item">
+        <a href="/tags/ " class="underline "> 标签</a>
+      </li><li class="menu-item">
+        <a href="/categories/ " class="underline "> 分类</a>
+      </li><li class="menu-item">
+        <a href="/about/ " class="underline "> 关于</a>
+      </li></ul>
+    
+      <div class="menu-copyright"><p>Powered by <a target="_blank" href="https://hexo.io">Hexo</a>  |  Theme - <a target="_blank" href="https://github.com/izhaoo/hexo-theme-zhaoo">zhaoo</a></p></div>
+    
+  </div>
+</nav>
+  <main id="main">
+  <div class="article-wrap">
+    <div class="row container">
+      <div class="col-xl-3"></div>
+      <div class="col-xl-6"><article class="article">
+  <div class="wrap">
+    <section class="head">
+  <img   class="lazyload" data-original="/images/theme/post-image.jpg" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="  draggable="false">
+  <div class="head-mask">
+    <h1 class="head-title">HPC homework 1</h1>
+    <div class="head-info">
+      <span class="post-info-item"><i class="iconfont iconcalendar"></i>December 15, 2023</span>
+      
+      <span class="post-info-item"><i class="iconfont iconfont-size"></i>12975</span>
+    </div>
+  </div>
+</section>
+    <section class="main">
+      <section class="content">
+        
+        <h1 id="单线程矩阵乘法"><a href="#单线程矩阵乘法" class="headerlink" title="单线程矩阵乘法"></a>单线程矩阵乘法</h1><h2 id="任务说明"><a href="#任务说明" class="headerlink" title="任务说明"></a>任务说明</h2><p>本任务在单个Intel CPU上进行通用的矩阵乘法。</p>
+<h2 id="性能优化"><a href="#性能优化" class="headerlink" title="性能优化"></a>性能优化</h2><h3 id="编译选项"><a href="#编译选项" class="headerlink" title="编译选项"></a>编译选项</h3><p>代码编译时从O级别变成O3级别，提升代码整体性能。</p>
+<p>同时添加 <code>-march=native</code>编译选项，使得编译器自行根据体系结构优化</p>
+<p>这个提升根据矩阵规模带来的性能提升不同，</p>
+<p>矩阵大小为31的矩阵Gflops从42.5提升为61.8, 提升约40%.</p>
+<p>矩阵大小为1025的矩阵Gflops从69.8提升为146，提升约100%.</p>
+<p>随着矩阵大小越大，系统性能提升的越多。</p>
+<h3 id="矩阵分块"><a href="#矩阵分块" class="headerlink" title="矩阵分块"></a>矩阵分块</h3><p>针对之前对三个维度各个维度均采用BLOCK_SIZE的思路，本算法这里结合后面的算法kernel设计了各个维度分块大小，如下面代码所示。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> M_SIZE (32)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> K_SIZE (256)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> N_SIZE (8)</span><br><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> k = <span class="hljs-number">0</span>; k &lt; lda; k += K_SIZE) &#123;<br>    <span class="hljs-type">int</span> K = min(K_SIZE, lda - k);<br>    <span class="hljs-comment">//packing row data</span><br>    packing_matrix_row(...);<br><br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; lda; i += M_SIZE) &#123;<br>        <span class="hljs-type">int</span> M = min(M_SIZE, lda - i);<br>        <span class="hljs-comment">//packing column data</span><br>        packing_matrix_col(...);<br><br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; lda; j += N_SIZE) &#123;<br>            <span class="hljs-type">int</span> N = min(N_SIZE, lda - j);<br>            <span class="hljs-comment">//calculate the matrix</span><br>            avx512_MxKxN(...);<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>设置 <code>M_SIZE</code>为32的原因是后面用的kernel大小行数均为32或者31，<code>N_SIZE</code>为8的原因是后面的kernel大小行数为8和7。</p>
+<p><code>K_SIZE</code>的值考虑的是能进入L2 cache(总共1280K)。</p>
+<p>分块可以有效利用数据的连续性。</p>
+<h3 id="矩阵乘法kernel"><a href="#矩阵乘法kernel" class="headerlink" title="矩阵乘法kernel"></a>矩阵乘法kernel</h3><p>矩阵乘法需要处理特定的数据，考虑到矩阵规模均为$32k$、$32k - 1$和$32k + 1$的矩阵，因此考虑使用下面六种kernel:</p>
+<ul>
+<li>32xKx8</li>
+<li>32xKx7</li>
+<li>32xKx1</li>
+<li>31xKx8</li>
+<li>31xKx7</li>
+<li>31xKx1</li>
+</ul>
+<p>针对列的变化设计的kernel原理比较，针对行的两大类kernel在数据打包和计算时需要特殊处理。</p>
+<p>在用这六种kernel处理完后，剩余的计算量最多为1xKxN，直接用最基本的方式计算就可以。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-keyword">inline</span> <span class="hljs-type">void</span> <span class="hljs-title function_">kernel_32xKx8_512_packing</span><span class="hljs-params">(<span class="hljs-type">int</span> lda, <span class="hljs-type">int</span> K, <span class="hljs-type">float</span>* packing_A, <span class="hljs-type">float</span>* packing_B, <span class="hljs-type">float</span>* C)</span> &#123;<br>    <span class="hljs-comment">//do calculte ...</span><br>&#125;<br><br><span class="hljs-type">static</span> <span class="hljs-keyword">inline</span> <span class="hljs-type">void</span> <span class="hljs-title function_">kernel_32xKx7_512_packing</span><span class="hljs-params">(<span class="hljs-type">int</span> lda, <span class="hljs-type">int</span> K, <span class="hljs-type">float</span>* packing_A, <span class="hljs-type">float</span>* packing_B, <span class="hljs-type">float</span>* C)</span> &#123;<br>    <span class="hljs-comment">//do calculte ...</span><br>&#125;<br><br><span class="hljs-type">static</span> <span class="hljs-keyword">inline</span> <span class="hljs-type">void</span> <span class="hljs-title function_">kernel_32xKx1_512_packing</span><span class="hljs-params">(<span class="hljs-type">int</span> lda, <span class="hljs-type">int</span> K, <span class="hljs-type">float</span>* packing_A, <span class="hljs-type">float</span>* packing_B, <span class="hljs-type">float</span>* C)</span> &#123;<br>    <span class="hljs-comment">//do calculte ...</span><br>&#125;<br><br><span class="hljs-type">static</span> <span class="hljs-keyword">inline</span> <span class="hljs-type">void</span> <span class="hljs-title function_">kernel_31xKx8_512_packing</span><span class="hljs-params">(<span class="hljs-type">int</span> lda, <span class="hljs-type">int</span> K, <span class="hljs-type">float</span>* packing_A, <span class="hljs-type">float</span>* packing_B, <span class="hljs-type">float</span>* C)</span> &#123;<br>    <span class="hljs-comment">//do calculte ...</span><br>&#125;<br><br><span class="hljs-type">static</span> <span class="hljs-keyword">inline</span> <span class="hljs-type">void</span> <span class="hljs-title function_">kernel_31xKx7_512_packing</span><span class="hljs-params">(<span class="hljs-type">int</span> lda, <span class="hljs-type">int</span> K, <span class="hljs-type">float</span>* packing_A, <span class="hljs-type">float</span>* packing_B, <span class="hljs-type">float</span>* C)</span> &#123;<br>    <span class="hljs-comment">//do calculte ...</span><br>&#125;<br><br><span class="hljs-type">static</span> <span class="hljs-keyword">inline</span> <span class="hljs-type">void</span> <span class="hljs-title function_">kernel_31xKx1_512_packing</span><span class="hljs-params">(<span class="hljs-type">int</span> lda, <span class="hljs-type">int</span> K, <span class="hljs-type">float</span>* packing_A, <span class="hljs-type">float</span>* packing_B, <span class="hljs-type">float</span>* C)</span> &#123;<br>    <span class="hljs-comment">//do calculte ...</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>整体分类架构如下面代码所示：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-keyword">inline</span> <span class="hljs-type">void</span> <span class="hljs-title function_">avx512_MxKxN</span><span class="hljs-params">(<span class="hljs-type">int</span> lda, <span class="hljs-type">int</span> M, <span class="hljs-type">int</span> N, <span class="hljs-type">int</span> K, <span class="hljs-type">float</span>* buffer_A, <span class="hljs-type">float</span>* A, <span class="hljs-type">float</span>* buffer_B, <span class="hljs-type">float</span>* B, <span class="hljs-type">float</span>* C)</span> &#123;<br>    <span class="hljs-keyword">if</span> (M == <span class="hljs-number">32</span>) &#123;<br>        <span class="hljs-keyword">if</span> (N == <span class="hljs-number">8</span>) &#123;<br>            kernel_32xKx8_512_packing(lda, K, buffer_A, buffer_B, C);<br>        &#125;<br>        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (N == <span class="hljs-number">7</span>) &#123;<br>            kernel_32xKx7_512_packing(lda, K, buffer_A, buffer_B, C);<br>        &#125;<br>        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (N == <span class="hljs-number">1</span>) &#123;<br>            kernel_32xKx1_512_packing(lda, K, buffer_A, buffer_B, C);<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (M == <span class="hljs-number">31</span>) &#123;<br>        <span class="hljs-keyword">if</span> (N == <span class="hljs-number">8</span>) &#123;<br>            kernel_31xKx8_512_packing(lda, K, buffer_A, buffer_B, C);<br>        &#125;<br>        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (N == <span class="hljs-number">7</span>) &#123;<br>            kernel_31xKx7_512_packing(lda, K, buffer_A, buffer_B, C);<br>        &#125;<br>        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (N == <span class="hljs-number">1</span>) &#123;<br>            kernel_31xKx1_512_packing(lda, K, buffer_A, buffer_B, C);<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">else</span> &#123;<br>        <span class="hljs-comment">// basic matrix power</span><br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; N; ++j)<br>        &#123;<br>            <span class="hljs-type">float</span> cij = C[index(<span class="hljs-number">0</span>, j)];<br>            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> k = <span class="hljs-number">0</span>; k &lt; K; ++k)<br>                cij += A[index(<span class="hljs-number">0</span>, k)] * B[index(k, j)];<br>            C[index(<span class="hljs-number">0</span>, j)] = cij;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="向量化"><a href="#向量化" class="headerlink" title="向量化"></a>向量化</h3><p>针对32xKx8矩阵乘法kernel，我们考虑采用512位向量化的方式加速计算。</p>
+<p>我们将列32拆成两个16位向量，每个向量的每一维元素都是一个float类型的数，这两个向量计算方式是类似的，我们以前1个向量做为介绍。</p>
+<p>取出坐标为$A(i,k)$的向下16个元素组成的列向量</p>
+<p>$$<br>a &#x3D; [A(i, k), A(i + 1), k] …, A(i + 15, k)]^T<br>$$</p>
+<p>考虑$B(k,j)$位置的元素，将其复制扩展为16个相同的元素的行向量</p>
+<p>$$<br>b &#x3D; [B(k, j), B(k, j) …, B(k, j)]<br>$$</p>
+<p>这两个向量$ab$做点积会产生对列向量</p>
+<p>$$<br>c &#x3D; [C(i, k), C(i + 1), k] …, C(i + 15, k)]^T<br>$$</p>
+<p>乘积贡献，这里采用向量化方式将这16个值同时存入。遍历$[0, K -1]$中所有的元素k，代码如下面所示，这样就形成了一个16xKx1 kernel:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-keyword">inline</span> <span class="hljs-type">void</span> <span class="hljs-title function_">kernel_16xKx1_512_packing</span><span class="hljs-params">(<span class="hljs-type">int</span> lda, <span class="hljs-type">int</span> K, <span class="hljs-type">float</span>* packing_A, <span class="hljs-type">float</span>* packing_B, <span class="hljs-type">float</span>* C)</span> &#123;<br>    __m512 c_00 = _mm512_setzero_ps();<br>    prefetch_T0(C);<br>    __m512 a_0, a_1;<br>    __m512 b_0, b_1, b_2, b_3, b_4, b_5, b_6, b_7;<br>    <span class="hljs-type">int</span> k = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">for</span> (k = <span class="hljs-number">0</span>; k &lt; K; k++) &#123;<br>        a_0 = _mm512_loadu_ps(packing_A + k * <span class="hljs-number">32</span>);<br>        b_0 = _mm512_set1_ps(*(packing_B + <span class="hljs-number">0</span>));<br>        c_00 = _mm512_fmadd_ps(a_0, b_0, c_00);<br>        packing_B ++;<br>    &#125;<br>    _m512_y_add_to_x(C, c_00);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>将其按照行和列扩展，就产生了32xKx8 kernel：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-keyword">inline</span> <span class="hljs-type">void</span> <span class="hljs-title function_">kernel_32xKx8_512_packing</span><span class="hljs-params">(<span class="hljs-type">int</span> lda, <span class="hljs-type">int</span> K, <span class="hljs-type">float</span>* packing_A, <span class="hljs-type">float</span>* packing_B, <span class="hljs-type">float</span>* C)</span> &#123;<br>    __m512 c_00 = _mm512_setzero_ps();<br>    __m512 c_10 = _mm512_setzero_ps();<br>    __m512 c_20 = _mm512_setzero_ps();<br>    __m512 c_30 = _mm512_setzero_ps();<br>    __m512 c_40 = _mm512_setzero_ps();<br>    __m512 c_50 = _mm512_setzero_ps();<br>    __m512 c_60 = _mm512_setzero_ps();<br>    __m512 c_70 = _mm512_setzero_ps();<br>    __m512 c_01 = _mm512_setzero_ps();<br>    __m512 c_11 = _mm512_setzero_ps();<br>    __m512 c_21 = _mm512_setzero_ps();<br>    __m512 c_31 = _mm512_setzero_ps();<br>    __m512 c_41 = _mm512_setzero_ps();<br>    __m512 c_51 = _mm512_setzero_ps();<br>    __m512 c_61 = _mm512_setzero_ps();<br>    __m512 c_71 = _mm512_setzero_ps();<br>    __m512 a_0, a_1;<br>    __m512 b_0, b_1, b_2, b_3, b_4, b_5, b_6, b_7;<br>    <span class="hljs-type">int</span> k = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">for</span> (k = <span class="hljs-number">0</span>; k &lt; K; k++) &#123;<br>        a_0 = _mm512_loadu_ps(packing_A + k * <span class="hljs-number">32</span>);<br>        a_1 = _mm512_loadu_ps(packing_A + k * <span class="hljs-number">32</span> + <span class="hljs-number">16</span>);<br>        b_0 = _mm512_set1_ps(*(packing_B + <span class="hljs-number">0</span>));<br>        c_00 = _mm512_fmadd_ps(a_0, b_0, c_00);<br>        c_01 = _mm512_fmadd_ps(a_1, b_0, c_01);<br>        b_1 = _mm512_set1_ps(*(packing_B + <span class="hljs-number">1</span>));<br>        c_10 = _mm512_fmadd_ps(a_0, b_1, c_10);<br>        c_11 = _mm512_fmadd_ps(a_1, b_1, c_11);<br>        b_2 = _mm512_set1_ps(*(packing_B + <span class="hljs-number">2</span>));<br>        c_20 = _mm512_fmadd_ps(a_0, b_2, c_20);<br>        c_21 = _mm512_fmadd_ps(a_1, b_2, c_21);<br>        b_3 = _mm512_set1_ps(*(packing_B + <span class="hljs-number">3</span>));<br>        c_30 = _mm512_fmadd_ps(a_0, b_3, c_30);<br>        c_31 = _mm512_fmadd_ps(a_1, b_3, c_31);<br>        b_4 = _mm512_set1_ps(*(packing_B + <span class="hljs-number">4</span>));<br>        c_40 = _mm512_fmadd_ps(a_0, b_4, c_40);<br>        c_41 = _mm512_fmadd_ps(a_1, b_4, c_41);<br>        b_5 = _mm512_set1_ps(*(packing_B + <span class="hljs-number">5</span>));<br>        c_50 = _mm512_fmadd_ps(a_0, b_5, c_50);<br>        c_51 = _mm512_fmadd_ps(a_1, b_5, c_51);<br>        b_6 = _mm512_set1_ps(*(packing_B + <span class="hljs-number">6</span>));<br>        c_60 = _mm512_fmadd_ps(a_0, b_6, c_60);<br>        c_61 = _mm512_fmadd_ps(a_1, b_6, c_61);<br>        b_7 = _mm512_set1_ps(*(packing_B + <span class="hljs-number">7</span>));<br>        c_70 = _mm512_fmadd_ps(a_0, b_7, c_70);<br>        c_71 = _mm512_fmadd_ps(a_1, b_7, c_71);<br>        packing_B += <span class="hljs-number">8</span>;<br>    &#125;<br>    _m512_y_add_to_x(C, c_00);<br>    _m512_y_add_to_x(C + <span class="hljs-number">16</span>, c_01);<br>    _m512_y_add_to_x(C + index(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>), c_10);<br>    _m512_y_add_to_x(C + index(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>) + <span class="hljs-number">16</span>, c_11);<br>    _m512_y_add_to_x(C + index(<span class="hljs-number">0</span>, <span class="hljs-number">2</span>), c_20);<br>    _m512_y_add_to_x(C + index(<span class="hljs-number">0</span>, <span class="hljs-number">2</span>) + <span class="hljs-number">16</span>, c_21);<br>    _m512_y_add_to_x(C + index(<span class="hljs-number">0</span>, <span class="hljs-number">3</span>), c_30);<br>    _m512_y_add_to_x(C + index(<span class="hljs-number">0</span>, <span class="hljs-number">3</span>) + <span class="hljs-number">16</span>, c_31);<br>    _m512_y_add_to_x(C + index(<span class="hljs-number">0</span>, <span class="hljs-number">4</span>), c_40);<br>    _m512_y_add_to_x(C + index(<span class="hljs-number">0</span>, <span class="hljs-number">4</span>) + <span class="hljs-number">16</span>, c_41);<br>    _m512_y_add_to_x(C + index(<span class="hljs-number">0</span>, <span class="hljs-number">5</span>), c_50);<br>    _m512_y_add_to_x(C + index(<span class="hljs-number">0</span>, <span class="hljs-number">5</span>) + <span class="hljs-number">16</span>, c_51);<br>    _m512_y_add_to_x(C + index(<span class="hljs-number">0</span>, <span class="hljs-number">6</span>), c_60);<br>    _m512_y_add_to_x(C + index(<span class="hljs-number">0</span>, <span class="hljs-number">6</span>) + <span class="hljs-number">16</span>, c_61);<br>    _m512_y_add_to_x(C + index(<span class="hljs-number">0</span>, <span class="hljs-number">7</span>), c_70);<br>    _m512_y_add_to_x(C + index(<span class="hljs-number">0</span>, <span class="hljs-number">7</span>) + <span class="hljs-number">16</span>, c_71);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这里的宏 <code>_m512_y_add_to_x(x, y)</code>含义如下面代码所示，采用向量化语句先将数据取出再加回去。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> _m512_y_add_to_x(x, y) _mm512_storeu_ps((x), _mm512_add_ps((y), _mm512_loadu_ps((x))))</span><br></code></pre></td></tr></table></figure>
+
+<p>对于31xKx8 kernel，需要做的是一个在数据打包过程中类似于32xKx8在第二个列向量上添加一个为0的float，同时在最后存数据时采用 <code>_mm512_mask_storeu_ps</code>原语不写回最后一位向量，如下面代码所示：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> _m512_y_add_to_x_15(x, y) _mm512_mask_storeu_ps((x), 0x7FFF, _mm512_add_ps((y), _mm512_loadu_ps((x))))</span><br><br><span class="hljs-type">static</span> <span class="hljs-keyword">inline</span> <span class="hljs-type">void</span> <span class="hljs-title function_">kernel_31xKx8_512_packing</span><span class="hljs-params">(<span class="hljs-type">int</span> lda, <span class="hljs-type">int</span> K, <span class="hljs-type">float</span>* packing_A, <span class="hljs-type">float</span>* packing_B, <span class="hljs-type">float</span>* C)</span> &#123;<br>    ...<br>    <span class="hljs-comment">// the front code is same with 32xKx8, now is the different</span><br>    _m512_y_add_to_x(C, c_00);<br>    _m512_y_add_to_x_15(C + <span class="hljs-number">16</span>, c_01);<br>    _m512_y_add_to_x(C + index(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>), c_10);<br>    _m512_y_add_to_x_15(C + index(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>) + <span class="hljs-number">16</span>, c_11);<br>    _m512_y_add_to_x(C + index(<span class="hljs-number">0</span>, <span class="hljs-number">2</span>), c_20);<br>    _m512_y_add_to_x_15(C + index(<span class="hljs-number">0</span>, <span class="hljs-number">2</span>) + <span class="hljs-number">16</span>, c_21);<br>    _m512_y_add_to_x(C + index(<span class="hljs-number">0</span>, <span class="hljs-number">3</span>), c_30);<br>    _m512_y_add_to_x_15(C + index(<span class="hljs-number">0</span>, <span class="hljs-number">3</span>) + <span class="hljs-number">16</span>, c_31);<br>    _m512_y_add_to_x(C + index(<span class="hljs-number">0</span>, <span class="hljs-number">4</span>), c_40);<br>    _m512_y_add_to_x_15(C + index(<span class="hljs-number">0</span>, <span class="hljs-number">4</span>) + <span class="hljs-number">16</span>, c_41);<br>    _m512_y_add_to_x(C + index(<span class="hljs-number">0</span>, <span class="hljs-number">5</span>), c_50);<br>    _m512_y_add_to_x_15(C + index(<span class="hljs-number">0</span>, <span class="hljs-number">5</span>) + <span class="hljs-number">16</span>, c_51);<br>    _m512_y_add_to_x(C + index(<span class="hljs-number">0</span>, <span class="hljs-number">6</span>), c_60);<br>    _m512_y_add_to_x_15(C + index(<span class="hljs-number">0</span>, <span class="hljs-number">6</span>) + <span class="hljs-number">16</span>, c_61);<br>    _m512_y_add_to_x(C + index(<span class="hljs-number">0</span>, <span class="hljs-number">7</span>), c_70);<br>    _m512_y_add_to_x_15(C + index(<span class="hljs-number">0</span>, <span class="hljs-number">7</span>) + <span class="hljs-number">16</span>, c_71);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>针对矩阵规模为32的矩阵，采用32xKx8的kernel的Gflops为107，基于普通矩阵乘法的速度为6.91，性能提升了1448%。</p>
+<p>向量化可以充分利用硬件水平，使得CPU在流水线上发挥最大的效果。</p>
+<h3 id="数据预取"><a href="#数据预取" class="headerlink" title="数据预取"></a>数据预取</h3><p>通过在kernel里面添加prefetch语言原语，将数据提前加载到cache，这样可以有效提升数据读取的速度，减少cache miss的次数。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-keyword">inline</span> <span class="hljs-type">void</span> <span class="hljs-title function_">kernel_32xKx8_512_packing</span><span class="hljs-params">(<span class="hljs-type">int</span> lda, <span class="hljs-type">int</span> K, <span class="hljs-type">float</span>* packing_A, <span class="hljs-type">float</span>* packing_B, <span class="hljs-type">float</span>* C)</span> &#123;<br>    <span class="hljs-comment">// inital variable...</span><br>    prefetch_T0(C);<br>    prefetch_T0(C + index(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>));<br>    prefetch_T0(C + index(<span class="hljs-number">0</span>, <span class="hljs-number">2</span>));<br>    prefetch_T0(C + index(<span class="hljs-number">0</span>, <span class="hljs-number">3</span>));<br>    prefetch_T0(C + index(<span class="hljs-number">0</span>, <span class="hljs-number">4</span>));<br>    prefetch_T0(C + index(<span class="hljs-number">0</span>, <span class="hljs-number">5</span>));<br>    prefetch_T0(C + index(<span class="hljs-number">0</span>, <span class="hljs-number">6</span>));<br>    prefetch_T0(C + index(<span class="hljs-number">0</span>, <span class="hljs-number">7</span>));<br>    <span class="hljs-comment">// calculte C...</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="数据打包-packing"><a href="#数据打包-packing" class="headerlink" title="数据打包(packing)"></a>数据打包(packing)</h3><p>数据打包的方式需要按照设计的kernel对应实现，针对矩阵A和矩阵B的数据打包方式是不一样的。</p>
+<p>矩阵A的数据打包方式按照32行为一个单元进行打包，如下列表: $[A(0,0), A(1, 0), A(2, 0) … A(30, 0), A(31, 0), A(0, 1), A(1, 1), A(2, 1)… A(31, 0) …]$</p>
+<p>在最后不到32行的位置，需要补全为32行才能使用31xKxN的kernel：$[A(i, 0), A(i + 1, 0), A(i + 2, 0) … A(i + 14, 0), 0, A(i, 1), A(i + 1, 1) … A(i + 14, 0), 0 …]$，这两个部分组成矩阵A的数据打包方式。</p>
+<p>矩阵B的打包方式按照每8列为单位进行打包，如下列表：$[B(0, 0), B(0, 1), B(0, 2) … B(0, 7), B(1, 0), B(1, 1) … B(1, 7) …]$</p>
+<p>在最后不到8列的位置，不需要补全直接按照行进行打包即可：$[B(0, i), B(0, i + 1) … B(0, i + 6), B(1, i), B(1, i + 1) … B(1, i + 6) …]$，这两个部分组成数据打包。</p>
+<p>代码如下图所示：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><code class="hljs c">矩阵B的数据打包方式<br><span class="hljs-type">static</span> <span class="hljs-keyword">inline</span> <span class="hljs-type">void</span> <span class="hljs-title function_">packing_matrix_row</span><span class="hljs-params">(<span class="hljs-type">float</span>* src, <span class="hljs-type">float</span>* dst, <span class="hljs-type">int</span> lda, <span class="hljs-type">int</span> K, <span class="hljs-type">int</span> N)</span> &#123;<br>    <span class="hljs-type">float</span>* s0;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; N_8; j += <span class="hljs-number">8</span>) &#123;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; K; i++) &#123;<br>            s0 = src + index(i, j);<br>            *dst++ = *s0;<br>            s0 += lda;<br>            *dst++ = *s0;<br>            s0 += lda;<br>            *dst++ = *s0;<br>            s0 += lda;<br>            *dst++ = *s0;<br>            s0 += lda;<br>            *dst++ = *s0;<br>            s0 += lda;<br>            *dst++ = *s0;<br>            s0 += lda;<br>            *dst++ = *s0;<br>            s0 += lda;<br>            *dst++ = *s0;<br>            s0 += lda;<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; K; i++) &#123;<br>        s0 = src + index(i, N_8);<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = N_8; j &lt; N; j++) &#123;<br>            *dst++ = *s0;<br>            s0 += lda;<br>        &#125;<br>    &#125;<br>&#125;<br><br>矩阵A的数据打包方式，采用AVX512优化<br><span class="hljs-type">static</span> <span class="hljs-keyword">inline</span> <span class="hljs-type">void</span> <span class="hljs-title function_">packing_matrix_col</span><span class="hljs-params">(<span class="hljs-type">float</span>* src, <span class="hljs-type">float</span>* dst, <span class="hljs-type">int</span> lda, <span class="hljs-type">int</span> M, <span class="hljs-type">int</span> K)</span> &#123;<br>    <span class="hljs-type">int</span> M_32 = M &amp; <span class="hljs-number">-32</span>, M_16 = M &amp; <span class="hljs-number">-16</span>, M_8 = M &amp; <span class="hljs-number">-8</span>;<br>    <span class="hljs-type">int</span> cnt = <span class="hljs-number">0</span>;<br>    <span class="hljs-type">float</span>* cur_src = src, * cur_dst = dst;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; M_32; i += <span class="hljs-number">32</span>) &#123;<br>        cur_src = src + i;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; K; ++j) &#123;<br>            <span class="hljs-comment">// memcpy(cur_dst, cur_src, 128);</span><br>            _mm512_store_ps(cur_dst, _mm512_loadu_ps(cur_src));<br>            _mm512_store_ps(cur_dst + <span class="hljs-number">16</span>, _mm512_loadu_ps(cur_src + <span class="hljs-number">16</span>));<br>            cur_src += lda;<br>            cur_dst += <span class="hljs-number">32</span>;<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">if</span> (M - M_32 == <span class="hljs-number">31</span>) &#123;<br>        cur_src = src + M_32;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; K; ++j) &#123;<br>            <span class="hljs-comment">// memcpy(cur_dst, cur_src, 120);</span><br>            _mm512_store_ps(cur_dst, _mm512_loadu_ps(cur_src));<br>            _mm512_mask_storeu_ps(cur_dst + <span class="hljs-number">16</span>, <span class="hljs-number">0x7FFF</span>, _mm512_loadu_ps(cur_src + <span class="hljs-number">16</span>));<br>            cur_dst[<span class="hljs-number">31</span>] = <span class="hljs-number">0</span>;<br>            cur_src += lda;<br>            cur_dst += <span class="hljs-number">32</span>;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>矩阵规模1024的性能从92.6Gflops变成146Gflops，性能提升50%，足以证明数据打包的效果。</p>
+<h3 id="展开部分小规模矩阵"><a href="#展开部分小规模矩阵" class="headerlink" title="展开部分小规模矩阵"></a>展开部分小规模矩阵</h3><p>当矩阵规模比较小时，许多循环走完1就会结束。</p>
+<p>因此我在代码中展开了代码规模为33的矩阵。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">if</span> (lda == <span class="hljs-number">33</span>) &#123;<br>    packing_matrix_row(B, buffer_B, lda, lda, lda);<br>    packing_matrix_col(A, buffer_A, lda, <span class="hljs-number">32</span>, lda);<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; lda; j += N_SIZE) &#123;<br>        <span class="hljs-type">int</span> N = min(N_SIZE, lda - j);<br>        avx512_MxKxN(lda, <span class="hljs-number">32</span>, N, lda, buffer_A, A, buffer_B + lda * j, B + index(<span class="hljs-number">0</span>, j), C + index(<span class="hljs-number">0</span>, j));<br>    &#125;<br>    packing_matrix_col(A + <span class="hljs-number">32</span>, buffer_A, lda, <span class="hljs-number">1</span>, lda);<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; lda; j += N_SIZE) &#123;<br>        <span class="hljs-type">int</span> N = min(N_SIZE, lda - j);<br>        avx512_MxKxN(lda, <span class="hljs-number">1</span>, N, lda, buffer_A, A + <span class="hljs-number">32</span>, buffer_B + lda * j, B + index(<span class="hljs-number">0</span>, j), C + index(<span class="hljs-number">32</span>, j));<br>    &#125;<br>    <span class="hljs-keyword">return</span>;<br>&#125;<br><span class="hljs-comment">//calculte other matrix...</span><br></code></pre></td></tr></table></figure>
+
+<p>代码性能Gflops从59.7提升为69.9，很多无用循环不需要再进入了，因此性能有所提升。</p>
+<h2 id="代码探索过程"><a href="#代码探索过程" class="headerlink" title="代码探索过程"></a>代码探索过程</h2><p>step 1: 尝试调整分块BLOCK_SIZE大小</p>
+<p>step 2: 编译选项改为O3</p>
+<p>step 3: 为了让A和C矩阵在乘法时访问连续（访问同行元素需要加lda），考虑引入矩阵转置</p>
+<p>step 4: 尝试使用AVX2命令中的256指令优化矩阵，完成8xKx8 kernel</p>
+<p>step 5: 继续添加更大的kernel，比如8xKx16 kernel</p>
+<p>step 6: 采用数据打包，每次在最里层进行数据打包</p>
+<p>step 7: 将数据打包从里层抽到外层进行处理</p>
+<p>step 8: 将256指令改成512指令，编写16xKx8 kernel和 32xKx8 kernel</p>
+<p>step 9: 加入预取指令</p>
+<p>step 10: 调整编译选项，增加-march&#x3D;native</p>
+<p>step 11: 增加 32x8、32x7、32x1、31x8、31x7、31x1 kernel</p>
+<p>step 12: 展开部分矩阵</p>
+<h2 id="代码总性能图"><a href="#代码总性能图" class="headerlink" title="代码总性能图"></a>代码总性能图</h2><p><img    class="lazyload" data-original="/images/hpc-hw1.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="   ><span class="image-caption">代码总性能图</span></p>
+
+      </section>
+      <section class="extra">
+        
+          <ul class="copyright">
+  
+    <li><strong>本文作者：</strong>Jeremy Chen</li>
+    <li><strong>本文链接：</strong><a href="http://jeremy2001-chen.github.io/2023/12/15/HPC-homework-1/index.html" title="http:&#x2F;&#x2F;jeremy2001-chen.github.io&#x2F;2023&#x2F;12&#x2F;15&#x2F;HPC-homework-1&#x2F;index.html">http:&#x2F;&#x2F;jeremy2001-chen.github.io&#x2F;2023&#x2F;12&#x2F;15&#x2F;HPC-homework-1&#x2F;index.html</a></li>
+    <li><strong>版权声明：</strong>本博客所有文章均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" title="BY-NC-SA" target="_blank" rel="noopener">BY-NC-SA</a> 许可协议，转载请注明出处！</li>
+  
+</ul>
+        
+        
+          <section class="donate">
+  <div id="qrcode-donate">
+    <img   class="lazyload" data-original="https://pic.izhaoo.com/alipay.jpg" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" >
+  </div>
+  <div class="icon">
+    <a href="javascript:;" id="alipay"><i class="iconfont iconalipay"></i></a>
+    <a href="javascript:;" id="wechat"><i class="iconfont iconwechat-fill"></i></a>
+  </div>
+</section>
+        
+        
+        
+  <nav class="nav">
+    <a></a>
+    <a href="/2023/12/15/%E8%87%AA%E6%88%91%E4%BB%8B%E7%BB%8D/">自我介绍<i class="iconfont iconright"></i></a>
+  </nav>
+
+      </section>
+      
+    </section>
+  </div>
+</article></div>
+      <div class="col-xl-3">
+        
+          
+  <aside class="toc-wrap">
+    <h3 class="toc-title">文章目录：</h3>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8D%95%E7%BA%BF%E7%A8%8B%E7%9F%A9%E9%98%B5%E4%B9%98%E6%B3%95"><span class="toc-text">单线程矩阵乘法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E8%AF%B4%E6%98%8E"><span class="toc-text">任务说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96"><span class="toc-text">性能优化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E9%80%89%E9%A1%B9"><span class="toc-text">编译选项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9F%A9%E9%98%B5%E5%88%86%E5%9D%97"><span class="toc-text">矩阵分块</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9F%A9%E9%98%B5%E4%B9%98%E6%B3%95kernel"><span class="toc-text">矩阵乘法kernel</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%91%E9%87%8F%E5%8C%96"><span class="toc-text">向量化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E9%A2%84%E5%8F%96"><span class="toc-text">数据预取</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E6%89%93%E5%8C%85-packing"><span class="toc-text">数据打包(packing)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B1%95%E5%BC%80%E9%83%A8%E5%88%86%E5%B0%8F%E8%A7%84%E6%A8%A1%E7%9F%A9%E9%98%B5"><span class="toc-text">展开部分小规模矩阵</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E6%8E%A2%E7%B4%A2%E8%BF%87%E7%A8%8B"><span class="toc-text">代码探索过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E6%80%BB%E6%80%A7%E8%83%BD%E5%9B%BE"><span class="toc-text">代码总性能图</span></a></li></ol></li></ol>
+  </aside>
+
+        
+      </div>
+    </div>
+  </div>
+</main>
+  
+
+<footer class="footer">
+  <div class="footer-social"><a 
+        href="tencent://message/?Menu=yes&uin=894519210 "
+        target="_blank"
+        class="footer-social-item"
+        onMouseOver="this.style.color= '#12B7F5'" 
+        onMouseOut="this.style.color='#33333D'">
+          <i class="iconfont  iconQQ "></i>
+      </a><a 
+        href="javascript:; "
+        target="_blank"
+        class="footer-social-item"
+        onMouseOver="this.style.color= '#09BB07'" 
+        onMouseOut="this.style.color='#33333D'">
+          <i class="iconfont  iconwechat-fill "></i>
+      </a><a 
+        href="https://www.instagram.com/izhaoo/ "
+        target="_blank"
+        class="footer-social-item"
+        onMouseOver="this.style.color= '#DA2E76'" 
+        onMouseOut="this.style.color='#33333D'">
+          <i class="iconfont  iconinstagram "></i>
+      </a><a 
+        href="https://github.com/zhaoo "
+        target="_blank"
+        class="footer-social-item"
+        onMouseOver="this.style.color= '#9f7be1'" 
+        onMouseOut="this.style.color='#33333D'">
+          <i class="iconfont  icongithub-fill "></i>
+      </a><a 
+        href="mailto:izhaoo@163.com "
+        target="_blank"
+        class="footer-social-item"
+        onMouseOver="this.style.color=#FF3B00" 
+        onMouseOut="this.style.color='#33333D'">
+          <i class="iconfont  iconmail"></i>
+      </a></div>
+  
+    <div class="footer-copyright"><p>Powered by <a target="_blank" href="https://hexo.io">Hexo</a>  |  Theme - <a target="_blank" href="https://github.com/izhaoo/hexo-theme-zhaoo">zhaoo</a></p></div>
+  
+</footer>
+  
+      <div class="fab fab-plus">
+    <i class="iconfont iconplus"></i>
+  </div>
+  
+  
+  
+  <div class="fab fab-up">
+    <i class="iconfont iconcaret-up"></i>
+  </div>
+  
+  
+  
+    
+<script src="/js/color-mode.js"></script>
+
+  
+  
+</body>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+
+
+
+  
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery.lazyload/1.9.1/jquery.lazyload.min.js"></script>
+
+
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+
+
+
+
+
+  
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+
+
+
+
+<script src="/js/utils.js"></script>
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+
+  <script>
+    (function () {
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      } else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+</html>
