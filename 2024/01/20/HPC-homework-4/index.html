@@ -1,0 +1,430 @@
+
+
+<!DOCTYPE html>
+<html lang="en" color-mode=light>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>HPC-homework-4 - Jeremy&#39;s Blog</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="google" content="notranslate" />
+  
+  <meta name="description" content="稀疏矩阵乘法（挑战作业）任务描述本任务为在多个GPU上...">
+  <meta name="author" content="Jeremy Chen">
+  <link rel="icon" href="/images/icons/favicon-16x16.png" type="image/png" sizes="16x16">
+  <link rel="icon" href="/images/icons/favicon-32x32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="/images/icons/apple-touch-icon.png" sizes="180x180">
+  <meta rel="mask-icon" href="/images/icons/stun-logo.svg" color="#333333">
+  
+    <meta rel="msapplication-TileImage" content="/images/icons/favicon-144x144.png">
+    <meta rel="msapplication-TileColor" content="#000000">
+  
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+
+  
+    
+<link rel="stylesheet" href="https://at.alicdn.com/t/font_1445822_p6ry5n7lrr.css">
+
+  
+
+  
+    
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css">
+
+  
+
+  
+    
+      
+        
+        
+<link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.18.1/styles/xcode.min.css" name="highlight-style" mode="light">
+
+      
+        
+        
+<link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.18.1/styles/solarized-dark.min.css" name="highlight-style" mode="dark">
+
+      
+  
+
+  <script>
+    var CONFIG = window.CONFIG || {};
+    var ZHAOO = window.ZHAOO || {};
+    CONFIG = {
+      isHome: false,
+      fancybox: true,
+      pjax: false,
+      loading: {
+        gif: '/images/theme/loading.gif',
+        lottie: ''
+      },
+      lazyload: {
+        enable: true,
+        only_post: 'false',
+        loading: {
+          gif: '/images/theme/loading.gif',
+          lottie: ''
+        }
+      },
+      donate: {
+        enable: false,
+        alipay: 'https://pic.izhaoo.com/alipay.jpg',
+        wechat: 'https://pic.izhaoo.com/wechat.jpg'
+      },
+      galleries: {
+        enable: true
+      },
+      fab: {
+        enable: true,
+        always_show: false
+      },
+      carrier: {
+        enable: true
+      },
+      daovoice: {
+        enable: false
+      },
+      preview: {
+        background: {
+          default: '',
+          api: ''
+        },
+        motto: {
+          default: '我在开了灯的床头下，想问问自己的心啊。',
+          typing: true,
+          api: 'https://v2.jinrishici.com/one.json',
+          data_contents: '["data","content"]'
+        },
+      },
+      qrcode: {
+        enable: true,
+        type: 'url',
+        image: 'https://pic.izhaoo.com/weapp-code.jpg',
+      },
+      toc: {
+        enable: true
+      },
+      scrollbar: {
+        type: 'default'
+      },
+      notification: {
+        enable: false,
+        delay: 4500,
+        list: '',
+        page_white_list: '',
+        page_black_list: ''
+      },
+      search: {
+        enable: false,
+        path: ''
+      }
+    }
+  </script>
+
+  
+
+  
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="lock-screen">
+  <div class="loading" id="loading"></div>
+  
+    
+
+
+  <nav class="navbar">
+    <div class="left">
+      
+        <i class="iconfont iconhome j-navbar-back-home"></i>
+      
+      
+        <i class="iconfont iconqrcode j-navbar-qrcode"></i>
+      
+      
+        <i class="iconfont iconmoono" id="color-toggle" color-toggle="light"></i>
+      
+      
+    </div>
+    <div class="center">HPC-homework-4</div>
+    <div class="right">
+      <i class="iconfont iconmenu j-navbar-menu"></i>
+    </div>
+    
+      <div id="qrcode-navbar"></div>
+    
+  </nav>
+
+  
+  
+
+<nav class="menu">
+  <div class="menu-container">
+    <div class="menu-close">
+      <i class="iconfont iconbaseline-close-px"></i>
+    </div>
+    <ul class="menu-content"><li class="menu-item">
+        <a href="/ " class="underline "> 首页</a>
+      </li><li class="menu-item">
+        <a href="/galleries/ " class="underline "> 摄影</a>
+      </li><li class="menu-item">
+        <a href="/archives/ " class="underline "> 归档</a>
+      </li><li class="menu-item">
+        <a href="/tags/ " class="underline "> 标签</a>
+      </li><li class="menu-item">
+        <a href="/categories/ " class="underline "> 分类</a>
+      </li><li class="menu-item">
+        <a href="/about/ " class="underline "> 关于</a>
+      </li></ul>
+    
+      <div class="menu-copyright"><p>Powered by <a target="_blank" href="https://hexo.io">Hexo</a>  |  Theme - <a target="_blank" href="https://github.com/izhaoo/hexo-theme-zhaoo">zhaoo</a></p></div>
+    
+  </div>
+</nav>
+  <main id="main">
+  <div class="article-wrap">
+    <div class="row container">
+      <div class="col-xl-3"></div>
+      <div class="col-xl-6"><article class="article">
+  <div class="wrap">
+    <section class="head">
+  <img   class="lazyload" data-original="/images/theme/post-image.jpg" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="  draggable="false">
+  <div class="head-mask">
+    <h1 class="head-title">HPC-homework-4</h1>
+    <div class="head-info">
+      <span class="post-info-item"><i class="iconfont iconcalendar"></i>January 20, 2024</span>
+      
+      <span class="post-info-item"><i class="iconfont iconfont-size"></i>9432</span>
+    </div>
+  </div>
+</section>
+    <section class="main">
+      <section class="content">
+        
+        <h1 id="稀疏矩阵乘法（挑战作业）"><a href="#稀疏矩阵乘法（挑战作业）" class="headerlink" title="稀疏矩阵乘法（挑战作业）"></a>稀疏矩阵乘法（挑战作业）</h1><h2 id="任务描述"><a href="#任务描述" class="headerlink" title="任务描述"></a>任务描述</h2><p>本任务为在多个GPU上对稀疏矩阵乘法进行优化。</p>
+<p>优化的代码为spgemm-optimized.cu，采用所有4个节点的GPU（每个进程一个GPU），使用下面的命令去运行：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">make<br>./run_all.sh benchmark-optimized 4 8 1<br></code></pre></td></tr></table></figure>
+
+<h2 id="稀疏矩阵乘法基本算法"><a href="#稀疏矩阵乘法基本算法" class="headerlink" title="稀疏矩阵乘法基本算法"></a>稀疏矩阵乘法基本算法</h2><p>整个流程包含两步：计算非零元个数和计算最终结果。</p>
+<p>分成两步的关键在于第二步的存储空间需要根据第一步的结果而通过 <code>cudaMalloc</code>或者 <code>Malloc</code>出来。</p>
+<h3 id="计算非零元个数"><a href="#计算非零元个数" class="headerlink" title="计算非零元个数"></a>计算非零元个数</h3><p>假设矩阵乘法为 <code>C=A x B</code></p>
+<p>首先枚举A矩阵的每一行i，根据CSR格式枚举列元素j，在B矩阵中根据行j的信息枚举列k，对于(i,k)产生一次贡献。</p>
+<p>为了能准确计算出非零元个数，我们需要对于k进行去重，考虑到我们需要将这个算法放在GPU上进行加速，我们采用哈希的方式进行优化。</p>
+<p>假设哈希表大小 <code>HASH_COUNT=2^T</code>，我们令哈希函数为 <code>F(x)=(x &amp; (HASH_COUNT - 1))</code>，这样比较容易计算。</p>
+<p>如果不巧出现哈希冲突，做法为向后（如果到了HASH_COUNT则回到0）继续找直到找到第一个空位，把数据放在其中。</p>
+<p>这种算法比较简单且容易实现。</p>
+<h3 id="计算最终结果"><a href="#计算最终结果" class="headerlink" title="计算最终结果"></a>计算最终结果</h3><p>类似于计算非零元个数的过程，唯一的差异在于不仅仅是在k的位置产生一次贡献，而需要把矩阵的值乘起来加在k所在的位置。</p>
+<p>因此需要在同样的哈希表中开一个对应的数据存储列表，在对应哈希值存在表时，需要把新的值累加在对应位置。</p>
+<h2 id="优化算法"><a href="#优化算法" class="headerlink" title="优化算法"></a>优化算法</h2><h3 id="GPU并行优化——计算结果"><a href="#GPU并行优化——计算结果" class="headerlink" title="GPU并行优化——计算结果"></a>GPU并行优化——计算结果</h3><p>在GPU中，可以利用其高并发度进行并行优化。</p>
+<p>这里并不是对于行进行切分，而是对于同一行里面的不同列进行切分（Kernel并行度为32），如下面代码所示：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-type">int</span> rid = blockIdx.x; <span class="hljs-comment">//行的编号</span><br><span class="hljs-type">int</span> tid = threadIdx.x; <span class="hljs-comment">//列的并行单元编号</span><br></code></pre></td></tr></table></figure>
+
+<p>首先初始化哈希表，这里可以利用__share__把数据放在共享显存中（同一组线程共享数据），哈希表的初始化可以每个线程初始化一部分。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = tid; i &lt; HASH_SIZE; i += <span class="hljs-number">32</span>) &#123;<br>    hash_idx[i] = <span class="hljs-number">-1</span>;<br>    hash_values[i] = <span class="hljs-number">0</span>;<br>&#125;<br>__syncthreads();<br></code></pre></td></tr></table></figure>
+
+<p>最后利用 <code>__syncthreads</code>方式同步所有线程。</p>
+<p>接下来按照每个线程计算每一部分来处理，这里需要注意的是由于哈希表是需要共同访问的所有需要用 <code>atomicCAS</code>来进行原子操作。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = matA-&gt;gpu_r_pos[rid] + tid; i &lt; matA-&gt;gpu_r_pos[rid + <span class="hljs-number">1</span>]; i += <span class="hljs-number">32</span>) &#123;<br>    <span class="hljs-type">int</span> pj = matA-&gt;gpu_c_idx[i];<br>    <span class="hljs-type">data_t</span> vj = matA-&gt;gpu_values[i];<br><br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = matB-&gt;gpu_r_pos[pj]; j &lt; matB-&gt;gpu_r_pos[pj + <span class="hljs-number">1</span>]; j++) &#123;<br>        <span class="hljs-type">int</span> pk = matB-&gt;gpu_c_idx[j];<br>        <span class="hljs-type">int</span> hash = (pk &amp; (HASH_SIZE - <span class="hljs-number">1</span>));<br>        <span class="hljs-keyword">while</span> (<span class="hljs-built_in">atomicCAS</span>(&amp;hash_idx[hash], <span class="hljs-number">-1</span>, pk) != <span class="hljs-number">-1</span>) &#123;<br>            <span class="hljs-keyword">if</span> (hash_idx[hash] == pk) &#123;<br>                <span class="hljs-keyword">break</span>;<br>            &#125;<br>            hash = ((hash + <span class="hljs-number">1</span>) &amp; (HASH_SIZE - <span class="hljs-number">1</span>));<br>        &#125;<br>        <span class="hljs-built_in">atomicAdd</span>(&amp;hash_values[hash], matB-&gt;gpu_values[j] * vj);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在所有数据插入哈希表之后，我们遍历整个哈希表，得到最终的数组。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs cpp">__syncthreads();<br><span class="hljs-type">int</span> start = matC-&gt;gpu_r_pos[rid];<br><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = tid; i &lt; HASH_SIZE; i += <span class="hljs-number">32</span>) &#123;<br>    <span class="hljs-keyword">if</span> (hash_idx[i] != <span class="hljs-number">-1</span>) &#123;<br>        <span class="hljs-type">int</span> pos = <span class="hljs-built_in">atomicAdd</span>(&amp;nzz, <span class="hljs-number">1</span>) + start;<br>        matC-&gt;gpu_c_idx[pos] = hash_idx[i];<br>        matC-&gt;gpu_values[pos] = hash_values[i];<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="GPU并行优化——统计数量"><a href="#GPU并行优化——统计数量" class="headerlink" title="GPU并行优化——统计数量"></a>GPU并行优化——统计数量</h3><p>统计数量依然需要用到哈希表，这里主要是把后面如何统计的方法介绍一下。</p>
+<p>统计数量方法和计算结果类似，每个线程的结果放在 <code>row_nzz</code> 中：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-type">int</span> row_nzz = <span class="hljs-number">0</span>, cal = <span class="hljs-number">0</span>;<br><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = matA-&gt;gpu_r_pos[rid] + tid; i &lt; matA-&gt;gpu_r_pos[rid + <span class="hljs-number">1</span>]; i += <span class="hljs-number">32</span>) &#123;<br>    <span class="hljs-type">int</span> pj = matA-&gt;gpu_c_idx[i];<br><br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = matB-&gt;gpu_r_pos[pj]; j &lt; matB-&gt;gpu_r_pos[pj + <span class="hljs-number">1</span>]; j++) &#123;<br>        <span class="hljs-type">int</span> pk = matB-&gt;gpu_c_idx[j];<br>        <span class="hljs-type">int</span> hash = (pk &amp; (HASH_COUNT_MAX - <span class="hljs-number">1</span>));<br>        <span class="hljs-keyword">while</span> (<span class="hljs-built_in">atomicCAS</span>(&amp;hash_idx[hash], <span class="hljs-number">-1</span>, pk) != <span class="hljs-number">-1</span>) &#123;<br>            <span class="hljs-keyword">if</span> (hash_idx[hash] == pk) &#123;<br>                row_nzz--;<br>                <span class="hljs-keyword">break</span>;<br>            &#125;<br>            hash = ((hash + <span class="hljs-number">1</span>) &amp; (HASH_COUNT_MAX - <span class="hljs-number">1</span>));<br>        &#125;<br>        row_nzz++;<br>    &#125;<br>    cal += matB-&gt;gpu_r_pos[pj + <span class="hljs-number">1</span>] - matB-&gt;gpu_r_pos[pj];<br>&#125;<br><br>__syncthreads();<br></code></pre></td></tr></table></figure>
+
+<p>后面采用规约方法（Reduction）统计到所有线程之和：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c">row_nzz += __shfl_xor_sync(<span class="hljs-type">int</span>(<span class="hljs-number">-1</span>), row_nzz, <span class="hljs-number">16</span>);<br>row_nzz += __shfl_xor_sync(<span class="hljs-type">int</span>(<span class="hljs-number">-1</span>), row_nzz, <span class="hljs-number">8</span>);<br>row_nzz += __shfl_xor_sync(<span class="hljs-type">int</span>(<span class="hljs-number">-1</span>), row_nzz, <span class="hljs-number">4</span>);<br>row_nzz += __shfl_xor_sync(<span class="hljs-type">int</span>(<span class="hljs-number">-1</span>), row_nzz, <span class="hljs-number">2</span>);<br>row_nzz += __shfl_xor_sync(<span class="hljs-type">int</span>(<span class="hljs-number">-1</span>), row_nzz, <span class="hljs-number">1</span>);<br></code></pre></td></tr></table></figure>
+
+<p>最后在第一个线程统计结果，并把大于HASH_COUNT的数量进行更新，并统计小于HASH_COUNT的最大值：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs cpp">__syncthreads();<br><span class="hljs-keyword">if</span> (tid == <span class="hljs-number">0</span>) &#123;<br>    nzzC[rid] = row_nzz;<br>    <span class="hljs-keyword">if</span> (row_nzz &gt; HASH_COUNT) &#123;<br>        <span class="hljs-type">int</span> pos = <span class="hljs-built_in">atomicAdd</span>(&amp;limit[<span class="hljs-number">0</span>], <span class="hljs-number">1</span>);<br>        limit_pos[pos] = rid;<br>    &#125;<br>    <span class="hljs-keyword">else</span> &#123;<br>        <span class="hljs-built_in">atomicMax</span>(&amp;limit[<span class="hljs-number">1</span>], row_nzz);<br>    &#125;<br>    <span class="hljs-comment">// calA[rid] = cal;</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="存在的问题"><a href="#存在的问题" class="headerlink" title="存在的问题"></a>存在的问题</h2><p>在偏随机的稀疏矩阵乘法中，最终每一行结果数量不会太多（比如第三次作业的矩阵），基本上哈希表开成2048即可通过。但在比较特殊构造的矩阵的乘法中，这种方式是无法通过的，比如这次的第三个测试点，最长的结果行有12000+个数据，这种方式下需要将哈希表开到16384，然而对于share内存NVCC存在限制，因此需要想一个解决的方法。</p>
+<h3 id="动态开显存"><a href="#动态开显存" class="headerlink" title="动态开显存"></a>动态开显存</h3><p>首先在统计数量时，我们在GPU kernel前先把申请的share memory大小从48KB变成64KB。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-built_in">cudaFuncSetAttribute</span>(calculate_nzz, cudaFuncAttributeMaxDynamicSharedMemorySize, <span class="hljs-number">65536</span>);<br></code></pre></td></tr></table></figure>
+
+<p>接下来在Kernel的调用时，我们动态申请空间，下面是调用Kernel的方法：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp">calculate_nzz &lt;&lt; &lt;dimGrid1, dimBlock1, <span class="hljs-function">HASH_COUNT_MAX * <span class="hljs-title">sizeof</span><span class="hljs-params">(<span class="hljs-type">int</span>)</span> &gt;&gt; &gt; </span><br></code></pre></td></tr></table></figure>
+
+<p>前个参数是Kernel的Grid数和Block数，第三个参数为动态申请share memory大小，在Kernel内部这样使用：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">extern</span> __shared__ <span class="hljs-type">int</span> h_int[];<br><span class="hljs-type">int</span>* hash_idx = (<span class="hljs-type">int</span>*)h_int;<br><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = tid; i &lt; HASH_COUNT_MAX; i += <span class="hljs-number">32</span>) &#123;<br>    hash_idx[i] = <span class="hljs-number">-1</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>通过extern关键字得到共享内存的虚拟地址，这里HASH_COUNT_MAX我们取16384，可以保证所有行都能统计数量。</p>
+<h3 id="单独统计较长行"><a href="#单独统计较长行" class="headerlink" title="单独统计较长行"></a>单独统计较长行</h3><p>在统计数量的过程中，我们需要把数量超过4096的行单独列出来，如Kernel所示：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">if</span> (tid == <span class="hljs-number">0</span>) &#123;<br>    nzzC[rid] = row_nzz;<br>    <span class="hljs-keyword">if</span> (row_nzz &gt; HASH_COUNT) &#123;<br>        <span class="hljs-type">int</span> pos = <span class="hljs-built_in">atomicAdd</span>(&amp;limit[<span class="hljs-number">0</span>], <span class="hljs-number">1</span>);<br>        limit_pos[pos] = rid;<br>    &#125;<br>    <span class="hljs-keyword">else</span> &#123;<br>        <span class="hljs-built_in">atomicMax</span>(&amp;limit[<span class="hljs-number">1</span>], row_nzz);<br>    &#125;<br>    <span class="hljs-comment">// calA[rid] = cal;</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这是因为在第二步计算结果时，由于16384的哈希表加统计结果超过了64KB，因此我们单独处理超过4096行的部分。而当哈希表仅开4096时，可以支持哈希表加上统计结果数组。Kernel中limit[0]表示的就是超过4096的数目，他们会被单独存放在数组limit_pos中。</p>
+<h3 id="单独计算较长行"><a href="#单独计算较长行" class="headerlink" title="单独计算较长行"></a>单独计算较长行</h3><p>较长行的数据统计我们采用一个特殊的Kernel：<code>calculate_values_large</code>，在这个Kernel中，哈希表依然采用share memory，但是哈希表存储的值则放在了显存中，每一个较长行一个哈希表存储序列，这部分空间在调用Kernel之前先申请出来空间。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">extern</span> __shared__ <span class="hljs-type">int</span> h_int[];<br><span class="hljs-type">int</span>* hash_idx = (<span class="hljs-type">int</span>*)h_int;<br><span class="hljs-type">data_t</span>* hash_values = valuess + blockIdx.x * HASH_COUNT_MAX;<br><br><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = tid; i &lt; HASH_COUNT_MAX; i += <span class="hljs-number">32</span>) &#123;<br>    hash_idx[i] = <span class="hljs-number">-1</span>;<br>    hash_values[i] = <span class="hljs-number">0</span>;<br>&#125;<br>__syncthreads();<br></code></pre></td></tr></table></figure>
+
+<p>上面代码是唯一和原本 <code>calculate_values</code> 不一样的地方，hash_values数组通过索引找到。</p>
+<h3 id="减少计算结果哈希表"><a href="#减少计算结果哈希表" class="headerlink" title="减少计算结果哈希表"></a>减少计算结果哈希表</h3><p>为了提高性能，可以发现对于不超过4096的行，哈希表大小仅需要开到不小于最长行的2的幂即可，因此在第一次统计数量的时候会单独计算最长行。在得到这个结果后，会通过枚举算出不少于最长行的2的幂，后面在计算结果的哈希表大小即为这个值。</p>
+<h2 id="多GPU任务划分"><a href="#多GPU任务划分" class="headerlink" title="多GPU任务划分"></a>多GPU任务划分</h2><p>前面描述了在单个GPU上的做法，在这个超算平台上每个节点有两块GPU，总共4个节点，尝试去利用所有这些计算资源。</p>
+<h3 id="矩阵任务切分"><a href="#矩阵任务切分" class="headerlink" title="矩阵任务切分"></a>矩阵任务切分</h3><p>假设进程数量为K，矩阵的每一行i按照取模的方式分配到第i%K个进程，因此首先需要先对整个矩阵进行切分，分配给不同进程中，首先开下面两个数组：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-type">dist_matrix_t</span> matA_d[PROCESS_COUNT], matC_d[PROCESS_COUNT];<br></code></pre></td></tr></table></figure>
+
+<p>在分配过程中，我们需要同时修改r_pos、c_idx和values数组，这个按照CSR格式重新构建矩阵：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; mat.global_m; i++) &#123;<br>    <span class="hljs-type">int</span> idx = i % PROCESS_COUNT;<br>    matA_d[idx].global_nnz += mat.r_pos[i + <span class="hljs-number">1</span>] - mat.r_pos[i];<br>    matA_d[idx].dist_m++;<br>&#125;<br><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; PROCESS_COUNT; i++) &#123;<br>    matA_d[i].r_pos = (<span class="hljs-type">index_t</span>*)<span class="hljs-built_in">malloc</span>((matA_d[i].dist_m + <span class="hljs-number">1</span>) * <span class="hljs-built_in">sizeof</span>(<span class="hljs-type">index_t</span>));<br>    matA_d[i].r_pos[<span class="hljs-number">0</span>] = <span class="hljs-number">0</span>;<br>    matA_d[i].c_idx = (<span class="hljs-type">index_t</span>*)<span class="hljs-built_in">malloc</span>((matA_d[i].global_nnz) * <span class="hljs-built_in">sizeof</span>(<span class="hljs-type">index_t</span>));<br>    matA_d[i].values = (<span class="hljs-type">data_t</span>*)<span class="hljs-built_in">malloc</span>((matA_d[i].global_nnz) * <span class="hljs-built_in">sizeof</span>(<span class="hljs-type">data_t</span>));<br>&#125;<br><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; mat.global_m; i++) &#123;<br>    <span class="hljs-type">int</span> m_idx = i % PROCESS_COUNT, p_idx = i / PROCESS_COUNT;<br>    <span class="hljs-type">int</span> start = matA_d[m_idx].r_pos[p_idx];<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = mat.r_pos[i]; j &lt; mat.r_pos[i + <span class="hljs-number">1</span>]; j++) &#123;<br>        matA_d[m_idx].c_idx[start] = mat.c_idx[j];<br>        matA_d[m_idx].values[start] = mat.values[j];<br>        start++;<br>    &#125;<br>    matA_d[m_idx].r_pos[p_idx + <span class="hljs-number">1</span>] = start;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>构建完毕后这样每个matA_d就仅仅是一部分行了，新增加的dist_m用于统计新的行数。</p>
+<h3 id="矩阵运算"><a href="#矩阵运算" class="headerlink" title="矩阵运算"></a>矩阵运算</h3><p>在进行矩阵运算时，每个进程直接调用spgemm函数用于计算即可</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-built_in">spgemm</span>(&amp;matA_d[my_pid], &amp;matB, &amp;matC_d[my_pid]);<br></code></pre></td></tr></table></figure>
+
+<p>这样每个进程都能平均负载，有效提高系统的整体性能。</p>
+<h3 id="结果整合"><a href="#结果整合" class="headerlink" title="结果整合"></a>结果整合</h3><p>最后我们通过MPI方式将所有结果发送到0号进程中，每个非0号进程通过下面的方式把数据发送到0好进程中：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-built_in">MPI_Isend</span>(&amp;(matC_d[my_pid].global_nnz), <span class="hljs-number">1</span>, MPI_INT, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, MPI_COMM_WORLD, &amp;request[(my_pid - <span class="hljs-number">1</span>) * <span class="hljs-number">4</span>]);<br><span class="hljs-built_in">MPI_Isend</span>(matC_d[my_pid].r_pos, matA_d[my_pid].dist_m + <span class="hljs-number">1</span>, MPI_INT, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, MPI_COMM_WORLD, &amp;request[(my_pid - <span class="hljs-number">1</span>) * <span class="hljs-number">4</span> + <span class="hljs-number">1</span>]);<br><span class="hljs-built_in">MPI_Isend</span>(matC_d[my_pid].c_idx, matC_d[my_pid].global_nnz, MPI_INT, <span class="hljs-number">0</span>, <span class="hljs-number">2</span>, MPI_COMM_WORLD, &amp;request[(my_pid - <span class="hljs-number">1</span>) * <span class="hljs-number">4</span> + <span class="hljs-number">2</span>]);<br><span class="hljs-built_in">MPI_Isend</span>(matC_d[my_pid].values, matC_d[my_pid].global_nnz, MPI_FLOAT, <span class="hljs-number">0</span>, <span class="hljs-number">3</span>, MPI_COMM_WORLD, &amp;request[(my_pid - <span class="hljs-number">1</span>) * <span class="hljs-number">4</span> + <span class="hljs-number">3</span>]);<br><br><span class="hljs-built_in">MPI_Waitall</span>(<span class="hljs-number">4</span>, request + ((my_pid - <span class="hljs-number">1</span>) * <span class="hljs-number">4</span>), MPI_STATUS_IGNORE);<br></code></pre></td></tr></table></figure>
+
+<p>这里我们通过MPI_Waitall方式可以等待所有请求完成，这里我们需要先发送 <code>global_nnz</code>这个变量，是因为我们需要在接收端申请新的空间。</p>
+<p>在接收端接受这些数据请求：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">1</span>; i &lt; PROCESS_COUNT; i++) &#123;<br>    <span class="hljs-built_in">MPI_Irecv</span>(&amp;(matC_d[i].global_nnz), <span class="hljs-number">1</span>, MPI_INT, i, <span class="hljs-number">0</span>, MPI_COMM_WORLD, &amp;request[(i - <span class="hljs-number">1</span>) * <span class="hljs-number">4</span>]);<br>    <span class="hljs-built_in">MPI_Wait</span>(&amp;request[(i - <span class="hljs-number">1</span>) * <span class="hljs-number">4</span>], MPI_STATUS_IGNORE);<br>    matC_d[i].r_pos = (<span class="hljs-type">index_t</span>*)<span class="hljs-built_in">malloc</span>((matA_d[i].dist_m + <span class="hljs-number">1</span>) * <span class="hljs-built_in">sizeof</span>(<span class="hljs-type">index_t</span>));<br>    matC_d[i].c_idx = (<span class="hljs-type">index_t</span>*)<span class="hljs-built_in">malloc</span>((matC_d[i].global_nnz) * <span class="hljs-built_in">sizeof</span>(<span class="hljs-type">index_t</span>));<br>    matC_d[i].values = (<span class="hljs-type">data_t</span>*)<span class="hljs-built_in">malloc</span>((matC_d[i].global_nnz) * <span class="hljs-built_in">sizeof</span>(<span class="hljs-type">data_t</span>));<br><br>    <span class="hljs-built_in">MPI_Irecv</span>(matC_d[i].r_pos, matA_d[i].dist_m + <span class="hljs-number">1</span>, MPI_INT, i, <span class="hljs-number">1</span>, MPI_COMM_WORLD, &amp;request[(i - <span class="hljs-number">1</span>) * <span class="hljs-number">4</span> + <span class="hljs-number">1</span>]);<br>    <span class="hljs-built_in">MPI_Irecv</span>(matC_d[i].c_idx, matC_d[i].global_nnz, MPI_INT, i, <span class="hljs-number">2</span>, MPI_COMM_WORLD, &amp;request[(i - <span class="hljs-number">1</span>) * <span class="hljs-number">4</span> + <span class="hljs-number">2</span>]);<br>    <span class="hljs-built_in">MPI_Irecv</span>(matC_d[i].values, matC_d[i].global_nnz, MPI_FLOAT, i, <span class="hljs-number">3</span>, MPI_COMM_WORLD, &amp;request[(i - <span class="hljs-number">1</span>) * <span class="hljs-number">4</span> + <span class="hljs-number">3</span>]);<br>    <span class="hljs-built_in">MPI_Waitall</span>(<span class="hljs-number">3</span>, request + (i - <span class="hljs-number">1</span>) * <span class="hljs-number">4</span> + <span class="hljs-number">1</span>, MPI_STATUS_IGNORE);<br> &#125;<br></code></pre></td></tr></table></figure>
+
+<p>这样我们就可以在0号进程中得到所有分矩阵大小了，最后我们类似于矩阵任务切分的方式，重新把矩阵进行整合：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs cpp">matC.global_m = matC_d[<span class="hljs-number">0</span>].global_m;<br><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; PROCESS_COUNT; i++) &#123;<br>    matC.global_nnz += matC_d[i].global_nnz;<br>&#125;<br>matC.r_pos = (<span class="hljs-type">index_t</span>*)<span class="hljs-built_in">malloc</span>((matC.global_m + <span class="hljs-number">1</span>) * <span class="hljs-built_in">sizeof</span>(<span class="hljs-type">index_t</span>));<br>matC.c_idx = (<span class="hljs-type">index_t</span>*)<span class="hljs-built_in">malloc</span>(matC.global_nnz * <span class="hljs-built_in">sizeof</span>(<span class="hljs-type">index_t</span>));<br>matC.values = (<span class="hljs-type">data_t</span>*)<span class="hljs-built_in">malloc</span>(matC.global_nnz * <span class="hljs-built_in">sizeof</span>(<span class="hljs-type">data_t</span>));<br><span class="hljs-type">int</span> cnt = <span class="hljs-number">0</span>;<br>matC.r_pos[<span class="hljs-number">0</span>] = <span class="hljs-number">0</span>;<br><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; matC.global_m; i++) &#123;<br>    <span class="hljs-type">int</span> m_idx = i % PROCESS_COUNT, p_idx = i / PROCESS_COUNT;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = matC_d[m_idx].r_pos[p_idx]; j &lt; matC_d[m_idx].r_pos[p_idx + <span class="hljs-number">1</span>]; j++) &#123;<br>        matC.c_idx[cnt] = matC_d[m_idx].c_idx[j];<br>        matC.values[cnt] = matC_d[m_idx].values[j];<br>        cnt++;<br>    &#125;<br>    matC.r_pos[i + <span class="hljs-number">1</span>] = cnt;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="实验结果分析"><a href="#实验结果分析" class="headerlink" title="实验结果分析"></a>实验结果分析</h2><h3 id="预处理时间分析"><a href="#预处理时间分析" class="headerlink" title="预处理时间分析"></a>预处理时间分析</h3><p><img    class="lazyload" data-original="/images/hpc-hw4-pre.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="   ><span class="image-caption">预处理时间</span></p>
+<p>可以发现相比于cuSPARSE库，任何GPU数量的预处理时间都更加省时间。</p>
+<p>而且更多的GPU数目并没有带来更多的预处理开销。</p>
+<h3 id="计算时间分析"><a href="#计算时间分析" class="headerlink" title="计算时间分析"></a>计算时间分析</h3><p><img    class="lazyload" data-original="/images/hpc-hw4-pre.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="   ><span class="image-caption">计算时间</span></p>
+<p>可以发现除了第三个点，8个GPU性能远远好于cuSPARSE库的方法，且在矩阵大小为1062400的矩阵上达到了8.8倍的提升。</p>
+<p>通过观察倍数曲线可以发现随着GPU数量的提升，系统性能的提升倍数在不断收敛，证明除了并行部分，串形部分的性能逐渐成为系统的性能瓶颈。</p>
+<p>第三个点为构造的矩阵，其特征为结果的每一行都比较长。证明本方法在随机稀疏矩阵中的性能会更好一些，而在结果比较稠密的矩阵中并不能得到更好的效果（可以发现8个GPU性能没有cuSPARSE库要好，而6个GPU性能比cuSPARSE库要好，说明负载均衡对于系统的重要意义）。</p>
+
+      </section>
+      <section class="extra">
+        
+          <ul class="copyright">
+  
+    <li><strong>本文作者：</strong>Jeremy Chen</li>
+    <li><strong>本文链接：</strong><a href="http://jeremy2001-chen.github.io/2024/01/20/HPC-homework-4/index.html" title="http:&#x2F;&#x2F;jeremy2001-chen.github.io&#x2F;2024&#x2F;01&#x2F;20&#x2F;HPC-homework-4&#x2F;index.html">http:&#x2F;&#x2F;jeremy2001-chen.github.io&#x2F;2024&#x2F;01&#x2F;20&#x2F;HPC-homework-4&#x2F;index.html</a></li>
+    <li><strong>版权声明：</strong>本博客所有文章均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" title="BY-NC-SA" target="_blank" rel="noopener">BY-NC-SA</a> 许可协议，转载请注明出处！</li>
+  
+</ul>
+        
+        
+        
+        
+  <nav class="nav">
+    <a></a>
+    <a href="/2023/12/19/HPC-homework-3/">HPC-homework-3<i class="iconfont iconright"></i></a>
+  </nav>
+
+      </section>
+      
+    </section>
+  </div>
+</article></div>
+      <div class="col-xl-3">
+        
+          
+  <aside class="toc-wrap">
+    <h3 class="toc-title">文章目录：</h3>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%A8%80%E7%96%8F%E7%9F%A9%E9%98%B5%E4%B9%98%E6%B3%95%EF%BC%88%E6%8C%91%E6%88%98%E4%BD%9C%E4%B8%9A%EF%BC%89"><span class="toc-text">稀疏矩阵乘法（挑战作业）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E6%8F%8F%E8%BF%B0"><span class="toc-text">任务描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A8%80%E7%96%8F%E7%9F%A9%E9%98%B5%E4%B9%98%E6%B3%95%E5%9F%BA%E6%9C%AC%E7%AE%97%E6%B3%95"><span class="toc-text">稀疏矩阵乘法基本算法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E9%9D%9E%E9%9B%B6%E5%85%83%E4%B8%AA%E6%95%B0"><span class="toc-text">计算非零元个数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%80%E7%BB%88%E7%BB%93%E6%9E%9C"><span class="toc-text">计算最终结果</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95"><span class="toc-text">优化算法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#GPU%E5%B9%B6%E8%A1%8C%E4%BC%98%E5%8C%96%E2%80%94%E2%80%94%E8%AE%A1%E7%AE%97%E7%BB%93%E6%9E%9C"><span class="toc-text">GPU并行优化——计算结果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GPU%E5%B9%B6%E8%A1%8C%E4%BC%98%E5%8C%96%E2%80%94%E2%80%94%E7%BB%9F%E8%AE%A1%E6%95%B0%E9%87%8F"><span class="toc-text">GPU并行优化——统计数量</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-text">存在的问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E5%BC%80%E6%98%BE%E5%AD%98"><span class="toc-text">动态开显存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%95%E7%8B%AC%E7%BB%9F%E8%AE%A1%E8%BE%83%E9%95%BF%E8%A1%8C"><span class="toc-text">单独统计较长行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%95%E7%8B%AC%E8%AE%A1%E7%AE%97%E8%BE%83%E9%95%BF%E8%A1%8C"><span class="toc-text">单独计算较长行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%8F%E5%B0%91%E8%AE%A1%E7%AE%97%E7%BB%93%E6%9E%9C%E5%93%88%E5%B8%8C%E8%A1%A8"><span class="toc-text">减少计算结果哈希表</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%9AGPU%E4%BB%BB%E5%8A%A1%E5%88%92%E5%88%86"><span class="toc-text">多GPU任务划分</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9F%A9%E9%98%B5%E4%BB%BB%E5%8A%A1%E5%88%87%E5%88%86"><span class="toc-text">矩阵任务切分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9F%A9%E9%98%B5%E8%BF%90%E7%AE%97"><span class="toc-text">矩阵运算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%9C%E6%95%B4%E5%90%88"><span class="toc-text">结果整合</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C%E5%88%86%E6%9E%90"><span class="toc-text">实验结果分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%84%E5%A4%84%E7%90%86%E6%97%B6%E9%97%B4%E5%88%86%E6%9E%90"><span class="toc-text">预处理时间分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E6%97%B6%E9%97%B4%E5%88%86%E6%9E%90"><span class="toc-text">计算时间分析</span></a></li></ol></li></ol></li></ol>
+  </aside>
+
+        
+      </div>
+    </div>
+  </div>
+</main>
+  
+
+<footer class="footer">
+  <div class="footer-social"><a 
+        href="https://github.com/jeremy2001-chen "
+        target="_blank"
+        class="footer-social-item"
+        onMouseOver="this.style.color= '#9f7be1'" 
+        onMouseOut="this.style.color='#33333D'">
+          <i class="iconfont  icongithub-fill "></i>
+      </a></div>
+  
+    <div class="footer-copyright"><p>Powered by <a target="_blank" href="https://hexo.io">Hexo</a>  |  Theme - <a target="_blank" href="https://github.com/izhaoo/hexo-theme-zhaoo">zhaoo</a></p></div>
+  
+</footer>
+  
+      <div class="fab fab-plus">
+    <i class="iconfont iconplus"></i>
+  </div>
+  
+  
+  
+  <div class="fab fab-up">
+    <i class="iconfont iconcaret-up"></i>
+  </div>
+  
+  
+  
+    
+<script src="/js/color-mode.js"></script>
+
+  
+  
+</body>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+
+
+
+  
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery.lazyload/1.9.1/jquery.lazyload.min.js"></script>
+
+
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+
+
+
+
+
+  
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+
+
+
+
+<script src="/js/utils.js"></script>
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+
+  <script>
+    (function () {
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      } else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+</html>
