@@ -290,7 +290,7 @@
 <h2 id="实验结果分析"><a href="#实验结果分析" class="headerlink" title="实验结果分析"></a>实验结果分析</h2><h3 id="预处理时间分析"><a href="#预处理时间分析" class="headerlink" title="预处理时间分析"></a>预处理时间分析</h3><p><img    class="lazyload" data-original="/images/hpc-hw4-pre.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="   ><span class="image-caption">预处理时间</span></p>
 <p>可以发现相比于cuSPARSE库，任何GPU数量的预处理时间都更加省时间。</p>
 <p>而且更多的GPU数目并没有带来更多的预处理开销。</p>
-<h3 id="计算时间分析"><a href="#计算时间分析" class="headerlink" title="计算时间分析"></a>计算时间分析</h3><p><img    class="lazyload" data-original="/images/hpc-hw4-pre.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="   ><span class="image-caption">计算时间</span></p>
+<h3 id="计算时间分析"><a href="#计算时间分析" class="headerlink" title="计算时间分析"></a>计算时间分析</h3><p><img    class="lazyload" data-original="/images/hpc-hw4-cal.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="   ><span class="image-caption">计算时间</span></p>
 <p>可以发现除了第三个点，8个GPU性能远远好于cuSPARSE库的方法，且在矩阵大小为1062400的矩阵上达到了8.8倍的提升。</p>
 <p>通过观察倍数曲线可以发现随着GPU数量的提升，系统性能的提升倍数在不断收敛，证明除了并行部分，串形部分的性能逐渐成为系统的性能瓶颈。</p>
 <p>第三个点为构造的矩阵，其特征为结果的每一行都比较长。证明本方法在随机稀疏矩阵中的性能会更好一些，而在结果比较稠密的矩阵中并不能得到更好的效果（可以发现8个GPU性能没有cuSPARSE库要好，而6个GPU性能比cuSPARSE库要好，说明负载均衡对于系统的重要意义）。</p>
