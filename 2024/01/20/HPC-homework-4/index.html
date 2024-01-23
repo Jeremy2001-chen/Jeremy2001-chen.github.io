@@ -200,7 +200,7 @@
     <div class="head-info">
       <span class="post-info-item"><i class="iconfont iconcalendar"></i>January 20, 2024</span>
       
-      <span class="post-info-item"><i class="iconfont iconfont-size"></i>9432</span>
+      <span class="post-info-item"><i class="iconfont iconfont-size"></i>9688</span>
     </div>
   </div>
 </section>
@@ -288,9 +288,59 @@
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs cpp">matC.global_m = matC_d[<span class="hljs-number">0</span>].global_m;<br><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; PROCESS_COUNT; i++) &#123;<br>    matC.global_nnz += matC_d[i].global_nnz;<br>&#125;<br>matC.r_pos = (<span class="hljs-type">index_t</span>*)<span class="hljs-built_in">malloc</span>((matC.global_m + <span class="hljs-number">1</span>) * <span class="hljs-built_in">sizeof</span>(<span class="hljs-type">index_t</span>));<br>matC.c_idx = (<span class="hljs-type">index_t</span>*)<span class="hljs-built_in">malloc</span>(matC.global_nnz * <span class="hljs-built_in">sizeof</span>(<span class="hljs-type">index_t</span>));<br>matC.values = (<span class="hljs-type">data_t</span>*)<span class="hljs-built_in">malloc</span>(matC.global_nnz * <span class="hljs-built_in">sizeof</span>(<span class="hljs-type">data_t</span>));<br><span class="hljs-type">int</span> cnt = <span class="hljs-number">0</span>;<br>matC.r_pos[<span class="hljs-number">0</span>] = <span class="hljs-number">0</span>;<br><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; matC.global_m; i++) &#123;<br>    <span class="hljs-type">int</span> m_idx = i % PROCESS_COUNT, p_idx = i / PROCESS_COUNT;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = matC_d[m_idx].r_pos[p_idx]; j &lt; matC_d[m_idx].r_pos[p_idx + <span class="hljs-number">1</span>]; j++) &#123;<br>        matC.c_idx[cnt] = matC_d[m_idx].c_idx[j];<br>        matC.values[cnt] = matC_d[m_idx].values[j];<br>        cnt++;<br>    &#125;<br>    matC.r_pos[i + <span class="hljs-number">1</span>] = cnt;<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <h2 id="实验结果分析"><a href="#实验结果分析" class="headerlink" title="实验结果分析"></a>实验结果分析</h2><h3 id="预处理时间分析"><a href="#预处理时间分析" class="headerlink" title="预处理时间分析"></a>预处理时间分析</h3><p><img    class="lazyload" data-original="/images/hpc-hw4-pre.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="   ><span class="image-caption">预处理时间</span></p>
+<table>
+<thead>
+<tr>
+<th align="center">测试类型</th>
+<th>88360</th>
+<th>12075</th>
+<th>1000005</th>
+<th>1062400</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">cuSPARSE</td>
+<td>0.172208</td>
+<td>0.171606</td>
+<td>0.172349</td>
+<td>0.174159</td>
+</tr>
+<tr>
+<td align="center">本系统</td>
+<td>0.001441</td>
+<td>0.001994</td>
+<td>0.005102</td>
+<td>0.026002</td>
+</tr>
+</tbody></table>
 <p>可以发现相比于cuSPARSE库，任何GPU数量的预处理时间都更加省时间。</p>
 <p>而且更多的GPU数目并没有带来更多的预处理开销。</p>
 <h3 id="计算时间分析"><a href="#计算时间分析" class="headerlink" title="计算时间分析"></a>计算时间分析</h3><p><img    class="lazyload" data-original="/images/hpc-hw4-cal.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="   ><span class="image-caption">计算时间</span></p>
+<table>
+<thead>
+<tr>
+<th align="center">测试类型</th>
+<th>88360</th>
+<th>12075</th>
+<th>1000005</th>
+<th>1062400</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">cuSPARSE</td>
+<td>0.004036</td>
+<td>0.046298</td>
+<td>0.112627</td>
+<td>0.534269</td>
+</tr>
+<tr>
+<td align="center">本系统</td>
+<td>0.001257</td>
+<td>0.010665</td>
+<td>0.136534</td>
+<td>0.026002</td>
+</tr>
+</tbody></table>
 <p>可以发现除了第三个点，8个GPU性能远远好于cuSPARSE库的方法，且在矩阵大小为1062400的矩阵上达到了8.8倍的提升。</p>
 <p>通过观察倍数曲线可以发现随着GPU数量的提升，系统性能的提升倍数在不断收敛，证明除了并行部分，串形部分的性能逐渐成为系统的性能瓶颈。</p>
 <p>第三个点为构造的矩阵，其特征为结果的每一行都比较长。证明本方法在随机稀疏矩阵中的性能会更好一些，而在结果比较稠密的矩阵中并不能得到更好的效果（可以发现8个GPU性能没有cuSPARSE库要好，而6个GPU性能比cuSPARSE库要好，说明负载均衡对于系统的重要意义）。</p>
