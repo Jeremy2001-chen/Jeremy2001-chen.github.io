@@ -6,12 +6,12 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Archive - Jeremy&#39;s Blog: 2023</title>
+  <title>Network-tools - Jeremy&#39;s Blog</title>
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="google" content="notranslate" />
   
-  
+  <meta name="description" content="网络工具本文主要介绍在MacOS上常用的网络工具（Li...">
   <meta name="author" content="Jeremy Chen">
   <link rel="icon" href="/images/icons/favicon-16x16.png" type="image/png" sizes="16x16">
   <link rel="icon" href="/images/icons/favicon-32x32.png" type="image/png" sizes="32x32">
@@ -152,7 +152,7 @@
       
       
     </div>
-    <div class="center">归档</div>
+    <div class="center">Network-tools</div>
     <div class="right">
       <i class="iconfont iconmenu j-navbar-menu"></i>
     </div>
@@ -188,61 +188,70 @@
   </div>
 </nav>
   <main id="main">
-  <section class="archive">
-    <div class="archive-container">
-      <div class="archive-post">
-        <h3 class="archive-total">归档: 7 篇</h3>
+  <div class="article-wrap">
+    <div class="row container">
+      <div class="col-xl-3"></div>
+      <div class="col-xl-6"><article class="article">
+  <div class="wrap">
+    <section class="head">
+  <img   class="lazyload" data-original="/images/theme/post-image.jpg" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="  draggable="false">
+  <div class="head-mask">
+    <h1 class="head-title">Network-tools</h1>
+    <div class="head-info">
+      <span class="post-info-item"><i class="iconfont iconcalendar"></i>February 06, 2024</span>
+      
+      <span class="post-info-item"><i class="iconfont iconfont-size"></i>321</span>
+    </div>
+  </div>
+</section>
+    <section class="main">
+      <section class="content">
+        
+        <h1 id="网络工具"><a href="#网络工具" class="headerlink" title="网络工具"></a>网络工具</h1><p>本文主要介绍在MacOS上常用的网络工具（Linux 也可能可以使用）</p>
+<h2 id="ncat"><a href="#ncat" class="headerlink" title="ncat"></a>ncat</h2><p>ncat是一个网络万能工具。</p>
+<h3 id="端口扫描"><a href="#端口扫描" class="headerlink" title="端口扫描"></a>端口扫描</h3><figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs lua">nc -z -v -n -t <span class="hljs-number">192.168</span><span class="hljs-number">.60</span><span class="hljs-number">.226</span> <span class="hljs-number">1</span><span class="hljs-number">-65535</span><br></code></pre></td></tr></table></figure>
+
+<p>后面两个是可以修改的地方（IP和端口范围）。</p>
+<p>得到结果中 <strong>Connection refused</strong> 的端口都是没法使用的，而 <strong>succeeded</strong> 则是可以使用的。</p>
+<p>为了方便处理，可以利用grep把成功的行打印出来。</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs lua">nc -z -v -n -t <span class="hljs-number">192.168</span><span class="hljs-number">.60</span><span class="hljs-number">.226</span> <span class="hljs-number">1</span><span class="hljs-number">-6555</span> &gt; <span class="hljs-number">23</span>scan.txt <span class="hljs-number">2</span>&gt;&amp;<span class="hljs-number">1</span><br>cat <span class="hljs-number">23</span>scan.txt | grep succeed &gt; suceed.txt<br></code></pre></td></tr></table></figure>
+
+      </section>
+      <section class="extra">
+        
+          <ul class="copyright">
+  
+    <li><strong>本文作者：</strong>Jeremy Chen</li>
+    <li><strong>本文链接：</strong><a href="http://jeremy2001-chen.github.io/2024/02/06/Network-tools/index.html" title="http:&#x2F;&#x2F;jeremy2001-chen.github.io&#x2F;2024&#x2F;02&#x2F;06&#x2F;Network-tools&#x2F;index.html">http:&#x2F;&#x2F;jeremy2001-chen.github.io&#x2F;2024&#x2F;02&#x2F;06&#x2F;Network-tools&#x2F;index.html</a></li>
+    <li><strong>版权声明：</strong>本博客所有文章均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" title="BY-NC-SA" target="_blank" rel="noopener">BY-NC-SA</a> 许可协议，转载请注明出处！</li>
+  
+</ul>
         
         
-          
-            <h3 class="archive-year">2024 年</h3>
-          
-          <div class="archive-item">
-            <a class="archive-date" href="/2024/02/06/Network-tools/">February 06</a>
-            <a class="archive-title" href="/2024/02/06/Network-tools/">Network-tools</a>
-          </div>
+        
+        
+  <nav class="nav">
+    <a></a>
+    <a href="/2024/01/29/Linux-data-structure/">Linux-data-structure<i class="iconfont iconright"></i></a>
+  </nav>
+
+      </section>
+      
+    </section>
+  </div>
+</article></div>
+      <div class="col-xl-3">
         
           
-          <div class="archive-item">
-            <a class="archive-date" href="/2024/01/29/Linux-data-structure/">January 29</a>
-            <a class="archive-title" href="/2024/01/29/Linux-data-structure/">Linux-data-structure</a>
-          </div>
-        
-          
-          <div class="archive-item">
-            <a class="archive-date" href="/2024/01/21/board-role-playing-games/">January 21</a>
-            <a class="archive-title" href="/2024/01/21/board-role-playing-games/">board role-playing games</a>
-          </div>
-        
-          
-          <div class="archive-item">
-            <a class="archive-date" href="/2024/01/20/HPC-homework-4/">January 20</a>
-            <a class="archive-title" href="/2024/01/20/HPC-homework-4/">HPC-homework-4</a>
-          </div>
-        
-          
-            <h3 class="archive-year">2023 年</h3>
-          
-          <div class="archive-item">
-            <a class="archive-date" href="/2023/12/19/HPC-homework-3/">December 19</a>
-            <a class="archive-title" href="/2023/12/19/HPC-homework-3/">HPC-homework-3</a>
-          </div>
-        
-          
-          <div class="archive-item">
-            <a class="archive-date" href="/2023/12/15/HPC-homework-1/">December 15</a>
-            <a class="archive-title" href="/2023/12/15/HPC-homework-1/">HPC homework 1</a>
-          </div>
-        
-          
-          <div class="archive-item">
-            <a class="archive-date" href="/2023/12/15/Introduction/">December 15</a>
-            <a class="archive-title" href="/2023/12/15/Introduction/">Introduction</a>
-          </div>
+  <aside class="toc-wrap">
+    <h3 class="toc-title">文章目录：</h3>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E5%B7%A5%E5%85%B7"><span class="toc-text">网络工具</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ncat"><span class="toc-text">ncat</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F"><span class="toc-text">端口扫描</span></a></li></ol></li></ol></li></ol>
+  </aside>
+
         
       </div>
     </div>
-  </section>
+  </div>
 </main>
   
 
