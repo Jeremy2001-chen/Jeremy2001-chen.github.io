@@ -200,7 +200,7 @@
     <div class="head-info">
       <span class="post-info-item"><i class="iconfont iconcalendar"></i>March 12, 2024</span>
       
-      <span class="post-info-item"><i class="iconfont iconfont-size"></i>846</span>
+      <span class="post-info-item"><i class="iconfont iconfont-size"></i>1338</span>
     </div>
   </div>
 </section>
@@ -217,9 +217,26 @@
 <p>由此提出用闪存阵列进行KV Cache，其容量可以达到PB级，价格也比单纯DRAM便宜36倍。</p>
 <h3 id="SSD-vs-AFA"><a href="#SSD-vs-AFA" class="headerlink" title="SSD vs AFA"></a>SSD vs AFA</h3><p>SSD存储系统DRAM充足，SSD数量少（其实就是DRAM&#x2F;SSD比例高）。AFA存储系统高性能、高容量，更少的DRAM和更大的SSD需要进行管理。</p>
 <p>随着SSD容量提升速度（1.38x）高于DRAM容量提升速度（1.13x），未来的趋势更倾向于AFA。</p>
-<h3 id="Challenge"><a href="#Challenge" class="headerlink" title="Challenge"></a>Challenge</h3><p>传统的SSD存储系统主要在三个问题上存在不足：索引（indexing）、过期的数据（Expiration）、系统的容错性（Fault-tolerance）。</p>
-<h4 id="indexing"><a href="#indexing" class="headerlink" title="indexing"></a>indexing</h4><p>在当前存储架构下Cache索引一般采用哈希表，数据会既存在于DRAM上，同时也会存在于SSD上。为了能找到一个数据对应的在SSD I&#x2F;O的位置，我们需要先访问DRAM上的内存，再在SSD上面的哈希表遍历找到真正数据存储所在lba，最后再根据此访问数据。通过实验可以发现，哈希表操作如果放在SSD上会显著降低系统的性能，最坏可能达到51%的性能下落。但是矛盾点是，AFA存储系统的DRAM&#x2F;SSD比例是相当低的，系统并没有都放在DRAM的空间。</p>
-<h4 id="Expiration"><a href="#Expiration" class="headerlink" title="Expiration"></a>Expiration</h4>
+<h3 id="Challenge"><a href="#Challenge" class="headerlink" title="Challenge"></a>Challenge</h3><p>传统的SSD存储系统主要在三个问题上存在不足：索引（Indexing）、过期的数据（Expiration）、系统的容错性（Fault-tolerance）。</p>
+<h4 id="Indexing"><a href="#Indexing" class="headerlink" title="Indexing"></a>Indexing</h4><p>在当前存储架构下Cache索引一般采用哈希表，数据会既存在于DRAM上，同时也会存在于SSD上。为了能找到一个数据对应的在SSD I&#x2F;O的位置，我们需要先访问DRAM上的内存，再在SSD上面的哈希表遍历找到真正数据存储所在lba，最后再根据此访问数据。通过实验可以发现，哈希表操作如果放在SSD上会显著降低系统的性能，最坏可能达到51%的性能下落。但是矛盾点是，AFA存储系统的DRAM&#x2F;SSD比例是相当低的，系统并没有都放在DRAM的空间。</p>
+<h4 id="Expiration"><a href="#Expiration" class="headerlink" title="Expiration"></a>Expiration</h4><p>对于过时的数据，如果不去删掉这些过时的数据，会导致SSD上可用数据块越来越少，导致后期Cache命中率不断降低。</p>
+<p>而完全扫描一遍整个SSD所花的开销非常非常大。</p>
+<h4 id="Fault-tolerance"><a href="#Fault-tolerance" class="headerlink" title="Fault-tolerance"></a>Fault-tolerance</h4><p>SSD错误处理通常采用RAID机制完成，但是更高等级的RAID机制会导致性能的降低和存储空间的浪费。</p>
+<h2 id="Relation-Work"><a href="#Relation-Work" class="headerlink" title="Relation Work"></a>Relation Work</h2><h4 id="Indexing-optimize"><a href="#Indexing-optimize" class="headerlink" title="Indexing optimize"></a>Indexing optimize</h4><ul>
+<li>Kangaroo（SOSP21）：将log和data分开，仅对log设置哈希索引，减小了对象的元数据大小</li>
+<li>FlashShield（NSDI19）：减少元数据，仅保留小的FP（fingerprint），采用链式索引</li>
+<li>SlickCache（SoCC18）：冷热哈希表，冷的存储在flash，热的存储在DRAM</li>
+</ul>
+<h4 id="Cross-layer-optimization"><a href="#Cross-layer-optimization" class="headerlink" title="Cross-layer optimization"></a>Cross-layer optimization</h4><ul>
+<li>uDepot（FAST19）：优化IO栈</li>
+</ul>
+<h2 id="Design"><a href="#Design" class="headerlink" title="Design"></a>Design</h2><h3 id="overall"><a href="#overall" class="headerlink" title="overall"></a>overall</h3><p>整个系统设计包括三个part</p>
+<ul>
+<li>Indexing: 双层哈希，解决性能下降的问题</li>
+<li>Expiration：利用TTL处理过期数据，不再使用全扫描</li>
+<li>Fault-tolerance：RAID0和节点控制</li>
+</ul>
+
       </section>
       <section class="extra">
         
@@ -249,7 +266,7 @@
           
   <aside class="toc-wrap">
     <h3 class="toc-title">文章目录：</h3>
-    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#All-Flash-Array-Key-Value-Cache-for-Large-Objects"><span class="toc-text">All-Flash Array Key-Value Cache for Large Objects</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Background"><span class="toc-text">Background</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#SSD-vs-AFA"><span class="toc-text">SSD vs AFA</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Challenge"><span class="toc-text">Challenge</span></a></li></ol></li></ol></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#All-Flash-Array-Key-Value-Cache-for-Large-Objects"><span class="toc-text">All-Flash Array Key-Value Cache for Large Objects</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Background"><span class="toc-text">Background</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#SSD-vs-AFA"><span class="toc-text">SSD vs AFA</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Challenge"><span class="toc-text">Challenge</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Relation-Work"><span class="toc-text">Relation Work</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Design"><span class="toc-text">Design</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#overall"><span class="toc-text">overall</span></a></li></ol></li></ol></li></ol>
   </aside>
 
         
