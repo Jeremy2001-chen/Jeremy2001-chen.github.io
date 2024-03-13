@@ -200,7 +200,7 @@
     <div class="head-info">
       <span class="post-info-item"><i class="iconfont iconcalendar"></i>March 12, 2024</span>
       
-      <span class="post-info-item"><i class="iconfont iconfont-size"></i>1812</span>
+      <span class="post-info-item"><i class="iconfont iconfont-size"></i>2386</span>
     </div>
   </div>
 </section>
@@ -240,7 +240,16 @@
 <p>哈希方式通常有两种：开放地址（Open-addressing）和链表式（Chained），前者在出现冲突后把数据对象存在相邻的位置，后者则把相同哈希值串成链表。</p>
 <p>在读取data时，还存在FP冲突，因为相同的FP可能对应不同的value。然而在允许cache miss的前提下，系统是不存在FP冲突的，因为我们将直接替换相同FP对应的value，这样即使FP相同value不同，我们也可以触发cache miss。</p>
 <p>在索引方面，DRAM上存储元数据，Flash上存储元数据和数据。DRAM上每个bucket大小64Byte，每个哈希表项16Byte，这是为了对齐cache line，整个DRAM分割成b个bucket，k个bucket组成SetCache，这个SetCache是同步到Flash上Htable的最小单位。在哈希过程中，创建新的哈希表项将不能越过临近的Htable，这样可以减少Flash上数据的读取量。</p>
-<h4 id="Expiration-1"><a href="#Expiration-1" class="headerlink" title="Expiration"></a>Expiration</h4>
+<h4 id="Expiration-1"><a href="#Expiration-1" class="headerlink" title="Expiration"></a>Expiration</h4><p>针对过期数据的回收工作，本文采用了TTL进行估计和计算。TTL根据范围包括短时间、中时间和长时间，为了实现更好的过期数据回收，系统会把TTL相近的数据块集中在一块儿（这里把它们的元数据放在一块儿就行），然后到时间一块儿free。但是存在问题是如果所有请求都没有过期，系统需要空间的时候，将选择在全局队列中最靠后的数据进行evict，把其中有效的数据移出来，无效的数据丢弃，这样可以能更好保留热数据。</p>
+<h4 id="Fault-tolerance-1"><a href="#Fault-tolerance-1" class="headerlink" title="Fault-tolerance"></a>Fault-tolerance</h4><p>RAID在速度和存储性能上都会产生额外开销。</p>
+<p>如果采用全局RAID0条带化，一旦某个磁盘损坏了，整个系统将全部无法使用。</p>
+<p>而采用分片的方式，损坏磁盘导致的大量cache miss也是一个非常重要的问题。</p>
+<p>当系统发现某个磁盘出现问题时，请求将通过新的哈希函数发送到其他磁盘进行处理，这样可以减少cache miss ratio。与此同时，当磁盘重新恢复后，系统将本应该属于恢复节点的请求通过当前处理的节点转发到磁盘，这样当磁盘逐渐恢复后，就可以重新启用了。</p>
+<p>元数据的持久化采用log-structure设计。</p>
+<h2 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h2><h3 id="Setup"><a href="#Setup" class="headerlink" title="Setup"></a>Setup</h3><p>实验设备：64GB DRAM，8块三星3.84TB盘</p>
+<p>评价指标：整体性能、Cache hit ratio和错误处理</p>
+<p>评价数据：YCSB、Twitter的Cache traces</p>
+
       </section>
       <section class="extra">
         
@@ -270,7 +279,7 @@
           
   <aside class="toc-wrap">
     <h3 class="toc-title">文章目录：</h3>
-    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#All-Flash-Array-Key-Value-Cache-for-Large-Objects"><span class="toc-text">All-Flash Array Key-Value Cache for Large Objects</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Background"><span class="toc-text">Background</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#SSD-vs-AFA"><span class="toc-text">SSD vs AFA</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Challenge"><span class="toc-text">Challenge</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Relation-Work"><span class="toc-text">Relation Work</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Design"><span class="toc-text">Design</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#overall"><span class="toc-text">overall</span></a></li></ol></li></ol></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#All-Flash-Array-Key-Value-Cache-for-Large-Objects"><span class="toc-text">All-Flash Array Key-Value Cache for Large Objects</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Background"><span class="toc-text">Background</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#SSD-vs-AFA"><span class="toc-text">SSD vs AFA</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Challenge"><span class="toc-text">Challenge</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Relation-Work"><span class="toc-text">Relation Work</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Design"><span class="toc-text">Design</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#overall"><span class="toc-text">overall</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Experiments"><span class="toc-text">Experiments</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Setup"><span class="toc-text">Setup</span></a></li></ol></li></ol></li></ol>
   </aside>
 
         
