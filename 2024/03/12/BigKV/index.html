@@ -200,7 +200,7 @@
     <div class="head-info">
       <span class="post-info-item"><i class="iconfont iconcalendar"></i>March 12, 2024</span>
       
-      <span class="post-info-item"><i class="iconfont iconfont-size"></i>1338</span>
+      <span class="post-info-item"><i class="iconfont iconfont-size"></i>1812</span>
     </div>
   </div>
 </section>
@@ -224,7 +224,7 @@
 <h4 id="Fault-tolerance"><a href="#Fault-tolerance" class="headerlink" title="Fault-tolerance"></a>Fault-tolerance</h4><p>SSD错误处理通常采用RAID机制完成，但是更高等级的RAID机制会导致性能的降低和存储空间的浪费。</p>
 <h2 id="Relation-Work"><a href="#Relation-Work" class="headerlink" title="Relation Work"></a>Relation Work</h2><h4 id="Indexing-optimize"><a href="#Indexing-optimize" class="headerlink" title="Indexing optimize"></a>Indexing optimize</h4><ul>
 <li>Kangaroo（SOSP21）：将log和data分开，仅对log设置哈希索引，减小了对象的元数据大小</li>
-<li>FlashShield（NSDI19）：减少元数据，仅保留小的FP（fingerprint），采用链式索引</li>
+<li>FlashShield（NSDI19）：减少元数据，仅保留小的FP（Fingerprint），采用链式索引</li>
 <li>SlickCache（SoCC18）：冷热哈希表，冷的存储在flash，热的存储在DRAM</li>
 </ul>
 <h4 id="Cross-layer-optimization"><a href="#Cross-layer-optimization" class="headerlink" title="Cross-layer optimization"></a>Cross-layer optimization</h4><ul>
@@ -234,9 +234,13 @@
 <ul>
 <li>Indexing: 双层哈希，解决性能下降的问题</li>
 <li>Expiration：利用TTL处理过期数据，不再使用全扫描</li>
-<li>Fault-tolerance：RAID0和节点控制</li>
+<li>Fault-tolerance：反应式容错</li>
 </ul>
-
+<h4 id="indexing"><a href="#indexing" class="headerlink" title="indexing"></a>indexing</h4><p>当前哈希表结构：DRAM上存储最近操作的哈希表项，SSD上存储整个哈希表项和所有KV对象数据的位置。</p>
+<p>哈希方式通常有两种：开放地址（Open-addressing）和链表式（Chained），前者在出现冲突后把数据对象存在相邻的位置，后者则把相同哈希值串成链表。</p>
+<p>在读取data时，还存在FP冲突，因为相同的FP可能对应不同的value。然而在允许cache miss的前提下，系统是不存在FP冲突的，因为我们将直接替换相同FP对应的value，这样即使FP相同value不同，我们也可以触发cache miss。</p>
+<p>在索引方面，DRAM上存储元数据，Flash上存储元数据和数据。DRAM上每个bucket大小64Byte，每个哈希表项16Byte，这是为了对齐cache line，整个DRAM分割成b个bucket，k个bucket组成SetCache，这个SetCache是同步到Flash上Htable的最小单位。在哈希过程中，创建新的哈希表项将不能越过临近的Htable，这样可以减少Flash上数据的读取量。</p>
+<h4 id="Expiration-1"><a href="#Expiration-1" class="headerlink" title="Expiration"></a>Expiration</h4>
       </section>
       <section class="extra">
         
