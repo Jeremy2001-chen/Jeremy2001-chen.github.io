@@ -200,7 +200,7 @@
     <div class="head-info">
       <span class="post-info-item"><i class="iconfont iconcalendar"></i>March 12, 2024</span>
       
-      <span class="post-info-item"><i class="iconfont iconfont-size"></i>2386</span>
+      <span class="post-info-item"><i class="iconfont iconfont-size"></i>2875</span>
     </div>
   </div>
 </section>
@@ -230,7 +230,7 @@
 <h4 id="Cross-layer-optimization"><a href="#Cross-layer-optimization" class="headerlink" title="Cross-layer optimization"></a>Cross-layer optimization</h4><ul>
 <li>uDepot（FAST19）：优化IO栈</li>
 </ul>
-<h2 id="Design"><a href="#Design" class="headerlink" title="Design"></a>Design</h2><h3 id="overall"><a href="#overall" class="headerlink" title="overall"></a>overall</h3><p>整个系统设计包括三个part</p>
+<h2 id="Design"><a href="#Design" class="headerlink" title="Design"></a>Design</h2><h3 id="Overall"><a href="#Overall" class="headerlink" title="Overall"></a>Overall</h3><p>整个系统设计包括三个part</p>
 <ul>
 <li>Indexing: 双层哈希，解决性能下降的问题</li>
 <li>Expiration：利用TTL处理过期数据，不再使用全扫描</li>
@@ -249,6 +249,13 @@
 <h2 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h2><h3 id="Setup"><a href="#Setup" class="headerlink" title="Setup"></a>Setup</h3><p>实验设备：64GB DRAM，8块三星3.84TB盘</p>
 <p>评价指标：整体性能、Cache hit ratio和错误处理</p>
 <p>评价数据：YCSB、Twitter的Cache traces</p>
+<h4 id="Performance-with-YCSB"><a href="#Performance-with-YCSB" class="headerlink" title="Performance with YCSB"></a>Performance with YCSB</h4><p>本文测量了在4KB、32KB、128KB和256KB的对象下，YCSB负载为0.99下系统的IOPS。整体来说，BigKV实现了99.3%和Cache Hit并将前3.1%的数据缓存在DRAM中。</p>
+<p>SlickCache在性能测试中比较差，原因是Cache Miss后代价比较大，需要读取整个哈希表。</p>
+<p>YCSB-A和YCSB-F（update占50percent）中，BigKV的性能要好于uDepot，主要原因对于FP的处理更好。</p>
+<p>当对象大小超过128KB后，各种系统的IOPS占比接近，这是因为元数据命中均提高，而且读写成为系统的重要瓶颈。</p>
+<h4 id="Hit-Rate-with-Traces"><a href="#Hit-Rate-with-Traces" class="headerlink" title="Hit Rate with Traces"></a>Hit Rate with Traces</h4><p>BigKV相比于uDepot，可以达到更高的Cache Hit最高点（2x）。同时尽管BigKV有热请求的回收操作，其申请新的空间依然接近0的开销。</p>
+<h4 id="Fault-tolerance-2"><a href="#Fault-tolerance-2" class="headerlink" title="Fault-tolerance"></a>Fault-tolerance</h4><p>在处理错误时，系统比RAID会略降低Cache Hit Ratio，但在恢复之后不断提升，最终达到原来的Cache Hit Ratio。</p>
+<p>8块SSD最终达到5.4倍提升。</p>
 
       </section>
       <section class="extra">
@@ -279,7 +286,7 @@
           
   <aside class="toc-wrap">
     <h3 class="toc-title">文章目录：</h3>
-    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#All-Flash-Array-Key-Value-Cache-for-Large-Objects"><span class="toc-text">All-Flash Array Key-Value Cache for Large Objects</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Background"><span class="toc-text">Background</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#SSD-vs-AFA"><span class="toc-text">SSD vs AFA</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Challenge"><span class="toc-text">Challenge</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Relation-Work"><span class="toc-text">Relation Work</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Design"><span class="toc-text">Design</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#overall"><span class="toc-text">overall</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Experiments"><span class="toc-text">Experiments</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Setup"><span class="toc-text">Setup</span></a></li></ol></li></ol></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#All-Flash-Array-Key-Value-Cache-for-Large-Objects"><span class="toc-text">All-Flash Array Key-Value Cache for Large Objects</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Background"><span class="toc-text">Background</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#SSD-vs-AFA"><span class="toc-text">SSD vs AFA</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Challenge"><span class="toc-text">Challenge</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Relation-Work"><span class="toc-text">Relation Work</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Design"><span class="toc-text">Design</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overall"><span class="toc-text">Overall</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Experiments"><span class="toc-text">Experiments</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Setup"><span class="toc-text">Setup</span></a></li></ol></li></ol></li></ol>
   </aside>
 
         
